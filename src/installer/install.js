@@ -7,28 +7,32 @@ const { ccCollides } = require('./alias');
 const { CONFIG_SCHEMA } = require('../registry');
 
 function runInstall(opts) {
-  const { home, env, platform, style, refreshInterval, globalInstall, resolveCc } = opts;
-  fs.mkdirSync(claudeDir(home), { recursive: true });
-
-  if (typeof globalInstall === 'function') globalInstall(); // npm i -g (no-op in tests)
+  const { home, env, platform, style, refreshInterval, globalInstall, resolveCc, dryRun } = opts;
 
   const caps = capabilities(env, platform);
   const recommended = recommendStyle(caps);
   const chosen = style || recommended;
-
-  // write config only if absent, to preserve user edits
   const cp = configPath(home);
-  if (!fs.existsSync(cp)) {
-    fs.writeFileSync(cp, JSON.stringify({ style: chosen }, null, 2) + '\n');
-  } else if (style) {
-    const raw = JSON.parse(fs.readFileSync(cp, 'utf8'));
-    raw.style = chosen;
-    fs.writeFileSync(cp, JSON.stringify(raw, null, 2) + '\n');
-  }
-
   const refresh = refreshInterval || CONFIG_SCHEMA.refreshIntervalSec.default;
-  const next = mergeStatusLine(readSettings(settingsPath(home)), 'claude-status-render', refresh);
-  writeSettingsWithBackup(settingsPath(home), backupPath(home), next);
+
+  // --dry-run reports what would happen but touches nothing on disk (spec §8).
+  if (!dryRun) {
+    fs.mkdirSync(claudeDir(home), { recursive: true });
+
+    if (typeof globalInstall === 'function') globalInstall(); // npm i -g (no-op in tests)
+
+    // write config only if absent, to preserve user edits
+    if (!fs.existsSync(cp)) {
+      fs.writeFileSync(cp, JSON.stringify({ style: chosen }, null, 2) + '\n');
+    } else if (style) {
+      const raw = JSON.parse(fs.readFileSync(cp, 'utf8'));
+      raw.style = chosen;
+      fs.writeFileSync(cp, JSON.stringify(raw, null, 2) + '\n');
+    }
+
+    const next = mergeStatusLine(readSettings(settingsPath(home)), 'claude-status-render', refresh);
+    writeSettingsWithBackup(settingsPath(home), backupPath(home), next);
+  }
 
   return {
     recommendedStyle: recommended,
@@ -37,6 +41,7 @@ function runInstall(opts) {
     ccCollision: ccCollides(platform, resolveCc || (() => null)),
     settingsPath: settingsPath(home),
     configPath: cp,
+    dryRun: !!dryRun,
   };
 }
 

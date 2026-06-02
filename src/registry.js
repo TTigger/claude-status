@@ -12,8 +12,9 @@ const STYLES = [
     icons: null, colorMode: 'traffic', decimals: false, rawTokens: false, lowercase: false,
     requires: 'unicode' },
   { name: 'tech', label: 'Tech 科技感', bar: { full: '█', empty: '▱' }, barWrap: ['', ''],
-    labels: { branch: '', ctx: 'B', sess: 'B', wk: '', ac: '♻' },
-    icons: { model: '', project: '' }, colorMode: 'traffic', decimals: false,
+    // Nerd Font glyphs as ES6 code-point escapes — plane-15 icons need \u{...}, not \uXXXX.
+    labels: { branch: '\u{E0A0}', ctx: '\u{F015B}', sess: '\u{F0CAB}', wk: '\u{F073}', ac: '\u{267B}' },
+    icons: { model: '\u{F2DB}', project: '\u{F07B}' }, colorMode: 'traffic', decimals: false,
     rawTokens: false, lowercase: false, requires: 'nerd' },
   { name: 'data', label: 'Data 數據控', bar: { full: '⣿', empty: '⠀' }, barWrap: ['', ''],
     labels: { branch: 'git:', ctx: 'CTX', sess: '5H', wk: '7D', ac: 'AC' },

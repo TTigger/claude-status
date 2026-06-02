@@ -36,3 +36,21 @@ test('--style overrides recommendation', () => {
   });
   assert.strictEqual(summary.chosenStyle, 'ascii');
 });
+
+test('dry run reports the plan but makes no filesystem changes', () => {
+  // fresh home WITHOUT a .claude dir, so we can assert nothing gets created
+  const home = path.join(os.tmpdir(), 'cs-dry-' + process.pid + '-' + Math.floor(performance.now()));
+  fs.mkdirSync(home, { recursive: true });
+  let globalInstallCalled = false;
+  const summary = runInstall({
+    home, env: { COLORTERM: 'truecolor', WT_SESSION: '1' }, platform: 'linux',
+    style: 'tech', refreshInterval: 30,
+    globalInstall: () => { globalInstallCalled = true; }, resolveCc: () => null,
+    dryRun: true,
+  });
+  assert.strictEqual(summary.dryRun, true);
+  assert.strictEqual(summary.chosenStyle, 'tech');
+  assert.strictEqual(summary.recommendedStyle, 'claude');
+  assert.strictEqual(globalInstallCalled, false, 'dry run must not run the global install');
+  assert.ok(!fs.existsSync(path.join(home, '.claude')), 'dry run must not create .claude');
+});

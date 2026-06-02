@@ -36,14 +36,20 @@ function cmdInstall(flags) {
     home: os.homedir(), env: process.env, platform: process.platform,
     style: typeof flags.style === 'string' ? flags.style : null,
     refreshInterval: 30,
-    globalInstall: flags['dry-run'] ? () => {} : () => {
+    dryRun: !!flags['dry-run'],
+    globalInstall: () => {
       try { execSync('npm install -g @ttigger/claude-status', { stdio: 'ignore' }); } catch {}
     },
     resolveCc: () => { try { return execSync('command -v cc', { stdio: ['ignore','pipe','ignore'] }).toString().trim() || null; } catch { return null; } },
   });
-  console.log(`✓ installed. style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
+  if (summary.dryRun) {
+    console.log(`[dry-run] no changes written. Would install style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
+    console.log(`[dry-run] would update ${summary.settingsPath} (with .bak) and write ${summary.configPath}`);
+  } else {
+    console.log(`✓ installed. style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
+  }
   if (summary.ccCollision) console.log('⚠ "cc" already exists on PATH (C compiler?). Consider: claude-status install --alias clc');
-  console.log('Open a new Claude Code session to see the HUD. Preview now:');
+  console.log(summary.dryRun ? 'Preview:' : 'Open a new Claude Code session to see the HUD. Preview now:');
   console.log(renderSample({ style: summary.chosenStyle, columns: parseInt(process.env.COLUMNS,10) || 100 }));
 }
 
