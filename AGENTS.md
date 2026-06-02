@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-`@ttigger/claude-status` is a portable Claude Code statusline HUD. It injects a pre-prompt hook into `~/.claude/settings.json` that runs `claude-status-render` before every Claude Code prompt, displaying model name, project folder, git branch, context usage bar, auto-compact estimate, and Session/Weekly usage limits with reset countdowns. The package ships three bins (`claude-status`, `claude-status-render`, `cc`), seven visual styles, four layouts, a config CLI, and a live preview command. It has zero runtime dependencies and targets Node ≥ 18 CommonJS.
+`@ttigger/claude-status` is a portable Claude Code statusline HUD. It merges a `statusLine` entry into `~/.claude/settings.json` (`{ "type": "command", "command": "claude-status-render" }`) that Claude Code runs to render the status line on every message, displaying model name, project folder, git branch, context usage bar, auto-compact estimate, and Session/Weekly usage limits with reset countdowns. The package ships three bins (`claude-status`, `claude-status-render`, `cc`), seven visual styles, four layouts, a config CLI, and a live preview command. It has zero runtime dependencies and targets Node ≥ 18 CommonJS.
 
 ## Commands
 
@@ -21,7 +21,7 @@ node --test test/<file>.test.js # run a single test file
 |---|---|
 | `src/registry.js` | **Single source of truth.** `STYLES` array (descriptors), `LAYOUTS`, `CONFIG_SCHEMA`. All other modules read from here. |
 | `src/elements.js` | Normalises raw stdin usage data into a typed model object consumed by the engine. |
-| `src/engine.js` | `buildParts(model, style, config)` — pure function; assembles HUD segments grouped by layout band (info / context / usage). |
+| `src/engine.js` | `buildParts({ els, style, palette, config, now, opts })` — pure function; returns ordered `{ key, text, group }` segments grouped by band (`env` / `context` / `limits`). |
 | `src/layout.js` | Distributes parts across one, two, or three lines according to the chosen layout and terminal width. |
 | `src/render.js` | Top-level `renderHud` — orchestrates elements → engine → layout → ANSI colour. |
 | `src/palette.js` | Theme-aware colour resolver; reads `~/.claude/settings.json` theme field. |
@@ -48,8 +48,8 @@ The installer uses a read–backup–merge–write pattern so that `~/.claude/se
 
 **If you add a HUD element:**
 1. `src/elements.js` — add normalisation logic for the new data field.
-2. `src/engine.js` `buildParts` — create the new segment and assign it to a layout group (info / context / usage).
-3. `src/registry.js` `CONFIG_SCHEMA` — add an `elements.<name>` boolean entry so it is configurable.
+2. `src/engine.js` `buildParts` — create the new segment (`{ key, text, group }`) and assign it to a layout group (`env` / `context` / `limits`).
+3. `src/registry.js` `CONFIG_SCHEMA` — add an `'elements.<name>'` dotted key (`{ type: 'bool', default: true }`) so it is configurable.
 4. Update the design spec (docs/) §4 element catalogue.
 5. Add tests covering the new element in `test/elements.test.js` and `test/engine.test.js`.
 

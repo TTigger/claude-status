@@ -1,6 +1,22 @@
-# @ttigger/claude-status
+<h1 align="center">@ttigger/claude-status</h1>
 
-A portable Claude Code statusline HUD — model, project, git, context bar, and real usage limits right in your terminal.
+<p align="center">A portable Claude Code statusline HUD — model, project, git, context, and real usage limits, right in your terminal.</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@ttigger/claude-status"><img src="https://img.shields.io/npm/v/@ttigger/claude-status" alt="npm version"></a>
+  <a href="https://github.com/TTigger/claude-status/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/TTigger/claude-status/ci.yml?branch=main&logo=github&label=CI" alt="CI status"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@ttigger/claude-status" alt="node >=18"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://packagephobia.com/result?p=@ttigger/claude-status"><img src="https://packagephobia.com/badge?p=@ttigger/claude-status" alt="install size"></a>
+</p>
+
+<p align="center">
+  <img src="./media/demo.svg" width="430" alt="claude-status statusline HUD rendered in a terminal showing model, project, git branch, context, session and weekly usage">
+</p>
+
+```sh
+npx @ttigger/claude-status install
+```
 
 ---
 

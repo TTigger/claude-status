@@ -26,9 +26,9 @@ Follow these steps in order. Do not skip any step — `npm test` will catch miss
      },
      icons: null,               // null OR { model: '…', project: '…' } for icon variants
      colorMode: 'coral',        // 'coral' | 'traffic'
-     decimals: 1,               // decimal places for token percentages
-     rawTokens: false,          // show raw token counts instead of percentages
-     lowercase: false,          // lowercase all output text
+     decimals: false,           // boolean: show one decimal place on % / token k (e.g. data style)
+     rawTokens: false,          // boolean: show raw token counts (e.g. '47k/200k') instead of just used
+     lowercase: false,          // boolean: lowercase all label text
      requires: 'unicode',       // terminal capability: 'ascii' | 'unicode' | 'truecolor' | 'nerd' | 'braille' | 'emoji'
    }
    ```

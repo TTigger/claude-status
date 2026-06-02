@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- README hero: centered title, badge row (npm version, CI, node, license, install size), and an SVG demo of the rendered HUD (`media/demo.svg`, regenerated via `scripts/gen-demo-svg.js`).
+
+### Fixed
+
+- Documentation accuracy: corrected `AGENTS.md`, `add-style`, and `add-hud-element` skills to match the real code — the installer merges a `statusLine` entry (not a pre-prompt hook), segment groups are `env`/`context`/`limits`, `buildParts` segments are `{ key, text, group }`, `CONFIG_SCHEMA` uses flat dotted keys with type `'bool'`, and `decimals` is a boolean.
+
 ## [0.1.0] - 2026-06-02
 
 ### Added
@@ -18,6 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `cc` launcher bin — forwards all arguments to `claude`; warns on macOS/Linux about the `cc` C-compiler name collision; `--alias` flag for a custom name.
 - Config CLI: `claude-status config set/get/list/reset` with dotted-key support for nested settings.
 - Live preview command: `claude-status preview --style <s> --layout <l>`.
-- `npx @ttigger/claude-status install` one-command installer; merges hook into `~/.claude/settings.json` with `.bak` backup.
+- `npx @ttigger/claude-status install` one-command installer; merges a `statusLine` entry into `~/.claude/settings.json` with `.bak` backup.
 - `claude-status uninstall` restores `~/.claude/settings.json` from backup.
 - Zero runtime dependencies; pure Node ≥ 18 CommonJS; cross-platform (Windows, macOS, Linux).

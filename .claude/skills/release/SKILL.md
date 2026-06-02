@@ -9,7 +9,7 @@ Follow these steps in order. Do not tag or publish before the suite is green.
 
 1. **Ensure `npm test` is green.**
 
-   Run `npm test` (uses `node --test`). All tests must pass — currently 59 tests. Fix any failures before proceeding. Do not skip this step.
+   Run `npm test` (uses `node --test`). All tests must pass (61 as of v0.1.0). Fix any failures before proceeding. Do not skip this step.
 
 2. **Bump `version` in `package.json`.**
 

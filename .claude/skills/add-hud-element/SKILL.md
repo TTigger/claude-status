@@ -23,30 +23,35 @@ Follow these steps in order. Each layer of the render pipeline depends on the pr
    `buildParts` iterates the normalized element model and produces an array of segment objects. Add a new segment push:
 
    ```js
-   // src/engine.js — inside buildParts(elements, style, config)
-   if (config.elements.myElement) {
-     parts.push({
-       group: 'context',          // 'env' | 'context' | 'limits'
-       label: style.labels.myElement ?? 'my-el',
-       value: elements.myElement,
-       // …any additional segment fields
+   // src/engine.js — inside buildParts({ els, style, palette, config, now, opts })
+   // `push(key, text, group)` is the local helper; `text` is the fully-rendered
+   // (already colored) string. For a bar metric use renderMetric:
+   if (config.elements.myElement && els.myElement) {
+     const text = renderMetric({
+       label: lc(L.myEl), pct: els.myElement.pct, suffix: '',
+       style, palette, thresholds, barWidth,
      });
+     push('myElement', text, 'context');   // group ∈ 'env' | 'context' | 'limits'
    }
    ```
 
-   Group semantics:
-   - `'env'` — environment/identity info (model, project).
-   - `'context'` — session/workspace context (branch, session id, working dir).
-   - `'limits'` — resource consumption (token counts, cost).
+   For a non-bar element, build the string directly (see the `autoCompact` /
+   `branch` cases) and `push('myElement', \`${lc(L.myEl)} ${value}\`, 'context')`.
+   Segments are `{ key, text, group }` objects (NOT `{ label, value }`).
+
+   Group semantics (must match the real bands in `buildParts`):
+   - `'env'` — identity/environment: model, project, git branch.
+   - `'context'` — context-window info: context bar, auto-compact remaining.
+   - `'limits'` — usage limits: Session (5h), Weekly (7d).
 
 3. **Add an `elements.<name>` boolean key to `CONFIG_SCHEMA` in `src/registry.js`.**
 
    ```js
-   // src/registry.js — CONFIG_SCHEMA.elements object
-   myElement: { type: 'boolean', default: true, description: 'Show my element' },
+   // src/registry.js — CONFIG_SCHEMA (flat object with dotted keys)
+   'elements.myElement': { type: 'bool', default: true },
    ```
 
-   This key is used by config validation, `config list`, and `--help` auto-generation. Setting `default: false` hides the element unless the user opts in.
+   This key is used by config validation, `config list`, and `--help` auto-generation. Setting `default: false` hides the element unless the user opts in. (Note: schema keys are flat dotted strings like `'elements.myElement'`, and the boolean type is `'bool'`, not `'boolean'`.)
 
 4. **Update documentation in two places:**
 
