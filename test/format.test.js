@@ -24,3 +24,19 @@ test('bar fills proportionally with given glyphs', () => {
   assert.strictEqual(bar(100, 4, { full: '#', empty: '-' }), '####');
   assert.strictEqual(bar(50, 8, { full: '#', empty: '-' }), '####----');
 });
+
+const { humanizeDuration, tokensK } = require('../src/format');
+
+test('humanizeDuration shows up to two units', () => {
+  assert.strictEqual(humanizeDuration(3 * 3600 + 12 * 60), '3h12m');
+  assert.strictEqual(humanizeDuration(4 * 86400 + 6 * 3600), '4d6h');
+  assert.strictEqual(humanizeDuration(12 * 60), '12m');
+  assert.strictEqual(humanizeDuration(30), '<1m');
+  assert.strictEqual(humanizeDuration(-10), '0m');
+});
+
+test('tokensK formats thousands', () => {
+  assert.strictEqual(tokensK(47000), '47k');
+  assert.strictEqual(tokensK(47000, true), '47.0k');
+  assert.strictEqual(tokensK(0), '0k');
+});
