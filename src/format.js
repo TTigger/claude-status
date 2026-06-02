@@ -10,4 +10,10 @@ function tier(pct, thresholds) {
   return 'high';
 }
 
-module.exports = { clampPct, tier };
+function bar(pct, width, glyphs) {
+  const p = clampPct(pct);
+  const filled = Math.round((p / 100) * width);
+  return glyphs.full.repeat(filled) + glyphs.empty.repeat(width - filled);
+}
+
+module.exports = { clampPct, tier, bar };

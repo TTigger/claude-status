@@ -15,3 +15,12 @@ test('tier respects thresholds (boundaries inclusive low side)', () => {
   assert.strictEqual(tier(80, t), 'mid');
   assert.strictEqual(tier(81, t), 'high');
 });
+
+const { bar } = require('../src/format');
+
+test('bar fills proportionally with given glyphs', () => {
+  assert.strictEqual(bar(23, 8, { full: '#', empty: '-' }), '##------');
+  assert.strictEqual(bar(0, 4, { full: '#', empty: '-' }), '----');
+  assert.strictEqual(bar(100, 4, { full: '#', empty: '-' }), '####');
+  assert.strictEqual(bar(50, 8, { full: '#', empty: '-' }), '####----');
+});
