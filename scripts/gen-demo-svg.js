@@ -11,6 +11,11 @@
 // neither clips nor leaves a gap regardless of which monospace font renders it.
 //
 // Usage: node scripts/gen-demo-svg.js
+//
+// NOTE: npm's README renderer blocks SVG images, so the README embeds the
+// rasterized media/demo.png (an absolute raw.githubusercontent URL). To
+// regenerate the PNG after changing this SVG, open media/demo.svg at its
+// natural size (1056x76) in a browser and screenshot it to media/demo.png.
 const fs = require('node:fs');
 const path = require('node:path');
 const { renderHud } = require('../src/render');
