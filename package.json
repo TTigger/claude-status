@@ -1,0 +1,17 @@
+{
+  "name": "@ttigger/claude-status",
+  "version": "0.1.0",
+  "description": "A portable Claude Code statusline HUD (usage, model, git, context) with 7 styles, a cc launcher, and a config CLI with live preview.",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "bin": {
+    "claude-status": "bin/claude-status.js",
+    "claude-status-render": "bin/claude-status-render.js",
+    "cc": "bin/cc.js"
+  },
+  "files": ["bin/", "src/", "README.md", "LICENSE"],
+  "scripts": { "test": "node --test" },
+  "keywords": ["claude", "claude-code", "statusline", "cli", "usage", "hud"],
+  "repository": { "type": "git", "url": "git+https://github.com/ttigger/claude-status.git" },
+  "homepage": "https://github.com/ttigger/claude-status#readme"
+}
