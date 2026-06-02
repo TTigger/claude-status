@@ -46,3 +46,26 @@ test('coerceValue barWidth accepts auto or int', () => {
   assert.deepStrictEqual(coerceValue('barWidth', 'auto'), { ok: true, value: 'auto' });
   assert.deepStrictEqual(coerceValue('barWidth', '12'), { ok: true, value: 12 });
 });
+
+const { getDotted, setConfig, resetConfig } = require('../src/config');
+
+test('getDotted reads nested', () => {
+  assert.strictEqual(getDotted(DEFAULT_CONFIG, 'elements.weekly'), true);
+  assert.strictEqual(getDotted(DEFAULT_CONFIG, 'style'), 'claude');
+});
+
+test('setConfig writes coerced value to file (deep)', () => {
+  const p = path.join(os.tmpdir(), 'setcfg-' + process.pid + '.json');
+  try { fs.unlinkSync(p); } catch {}
+  let r = setConfig(p, 'style', 'tech');
+  assert.strictEqual(r.ok, true);
+  r = setConfig(p, 'elements.weekly', 'false');
+  assert.strictEqual(r.ok, true);
+  const saved = JSON.parse(fs.readFileSync(p, 'utf8'));
+  assert.strictEqual(saved.style, 'tech');
+  assert.strictEqual(saved.elements.weekly, false);
+  // invalid value rejected, file unchanged
+  const bad = setConfig(p, 'style', 'nope');
+  assert.strictEqual(bad.ok, false);
+  fs.unlinkSync(p);
+});
