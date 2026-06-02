@@ -10,7 +10,7 @@ const SAMPLE = {
   },
   rate_limits: {
     five_hour: { used_percentage: 52, resets_at: 1717400000 },
-    seven_day: { used_percentage: 31, resets_at: 1717700000 },
+    seven_day: { used_percentage: 31, resets_at: 1717755680 },
   },
 };
 // "now" so sample resets render as 3h12m / 4d6h deterministically:
