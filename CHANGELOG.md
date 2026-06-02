@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-02
+
+### Fixed
+
+- README demo now renders on npmjs.com: switched the embedded demo from SVG to a rasterized PNG (`media/demo.png`) referenced by an absolute `raw.githubusercontent.com` URL, since npm's README renderer blocks SVG images and rewrites relative paths to the repo.
+- Squared the demo terminal card so the screenshot has clean edges (no white corners).
+
 ## [0.1.1] - 2026-06-02
 
 ### Added
