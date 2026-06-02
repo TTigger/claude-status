@@ -1,3 +1,7 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+
 function aliasSnippet(shell, name) {
   if (shell === 'powershell') return `Set-Alias ${name} cc`;
   return `alias ${name}='cc'`;
@@ -9,4 +13,35 @@ function ccCollides(platform, resolver) {
   return !!resolver();
 }
 
-module.exports = { aliasSnippet, ccCollides };
+function detectShell(env, platform) {
+  if (platform === 'win32') {
+    return { shell: 'powershell', profilePath: null };
+  }
+  const home = env.HOME || os.homedir();
+  const shellEnv = env.SHELL || '';
+  if (shellEnv.includes('zsh')) {
+    return { shell: 'zsh', profilePath: path.posix.join(home, '.zshrc') };
+  }
+  return { shell: 'bash', profilePath: path.posix.join(home, '.bashrc') };
+}
+
+function writeAlias(profilePath, shell, name) {
+  const snippet = aliasSnippet(shell, name);
+  if (profilePath === null) {
+    return { written: false, reason: 'no-profile', snippet, profilePath: null };
+  }
+  let existing = '';
+  try {
+    existing = fs.readFileSync(profilePath, 'utf8');
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+  }
+  if (existing.includes(snippet)) {
+    return { written: false, reason: 'exists', snippet, profilePath };
+  }
+  const block = `\n# claude-status alias\n${snippet}\n`;
+  fs.writeFileSync(profilePath, existing + block, 'utf8');
+  return { written: true, reason: 'written', snippet, profilePath };
+}
+
+module.exports = { aliasSnippet, ccCollides, detectShell, writeAlias };
