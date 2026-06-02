@@ -12,6 +12,6 @@
   "files": ["bin/", "src/", "README.md", "LICENSE"],
   "scripts": { "test": "node --test" },
   "keywords": ["claude", "claude-code", "statusline", "cli", "usage", "hud"],
-  "repository": { "type": "git", "url": "git+https://github.com/ttigger/claude-status.git" },
-  "homepage": "https://github.com/ttigger/claude-status#readme"
+  "repository": { "type": "git", "url": "git+https://github.com/TTigger/claude-status.git" },
+  "homepage": "https://github.com/TTigger/claude-status#readme"
 }
