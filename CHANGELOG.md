@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-02
+
 ### Added
 
-- README hero: centered title, badge row (npm version, CI, node, license, install size), and an SVG demo of the rendered HUD (`media/demo.svg`, regenerated via `scripts/gen-demo-svg.js`).
+- README hero: centered title, badge row (npm version, CI, node, license, install size), and a single-line SVG demo of the rendered HUD (`media/demo.svg`, regenerated via `scripts/gen-demo-svg.js`).
 
 ### Fixed
 
