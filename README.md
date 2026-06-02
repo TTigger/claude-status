@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="./media/demo.svg" width="430" alt="claude-status statusline HUD rendered in a terminal showing model, project, git branch, context, session and weekly usage">
+  <img src="./media/demo.svg" width="820" alt="claude-status statusline HUD rendered in a terminal showing model, project, git branch, context, session and weekly usage">
 </p>
 
 ```sh

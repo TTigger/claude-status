@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="414" height="152" viewBox="0 0 414 152" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15">
-  <rect x="0" y="0" width="414" height="152" rx="10" fill="#1b1c1e"/>
-  <rect x="0" y="0" width="414" height="40" rx="10" fill="#26282b"/>
-  <rect x="0" y="30" width="414" height="10" fill="#26282b"/>
-  <circle cx="20" cy="22" r="6" fill="#ff5f56"/><circle cx="40" cy="22" r="6" fill="#ffbd2e"/><circle cx="60" cy="22" r="6" fill="#27c93f"/>
-  <text xml:space="preserve" font-weight="500"><tspan x="22.0" y="52" fill="#d7d4cf">Opus 4.8·1M | my-app | ⎇ main</tspan><tspan x="22.0" y="78" fill="#d7d4cf">Ctx </tspan><tspan x="57.2" y="78" fill="#ffaf87">▰▰▰▰▱▱▱▱</tspan><tspan x="127.6" y="78" fill="#d7d4cf"> </tspan><tspan x="136.4" y="78" fill="#ffaf87">47%</tspan><tspan x="162.8" y="78" fill="#d7d4cf"> 470k | compact 37%</tspan><tspan x="22.0" y="104" fill="#d7d4cf">S </tspan><tspan x="39.6" y="104" fill="#d7875f">▰▰▰▰▰▱▱▱</tspan><tspan x="110.0" y="104" fill="#d7d4cf"> </tspan><tspan x="118.8" y="104" fill="#d7875f">68%</tspan><tspan x="145.2" y="104" fill="#d7d4cf"> 4h13m | W </tspan><tspan x="242.0" y="104" fill="#d75f5f">▰▰▰▰▰▰▰▱</tspan><tspan x="312.4" y="104" fill="#d7d4cf"> </tspan><tspan x="321.2" y="104" fill="#d75f5f">85%</tspan><tspan x="347.6" y="104" fill="#d7d4cf"> 5d3h</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1056" height="76" viewBox="0 0 1056 76" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="500">
+  <rect x="0" y="0" width="1056" height="76" rx="10" fill="#1b1c1e"/>
+  <rect x="0" y="0" width="1056" height="40" rx="10" fill="#26282b"/>
+  <rect x="0" y="30" width="1056" height="10" fill="#26282b"/>
+  <circle cx="22" cy="22" r="6" fill="#ff5f56"/><circle cx="42" cy="22" r="6" fill="#ffbd2e"/><circle cx="62" cy="22" r="6" fill="#27c93f"/>
+  <text x="24" y="54" xml:space="preserve" textLength="1008" lengthAdjust="spacingAndGlyphs"><tspan fill="#d7d4cf">Opus 4.8·1M | my-app | ⎇ main | Ctx </tspan><tspan fill="#ffaf87">▰▰▰▰▱▱▱▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#ffaf87">47%</tspan><tspan fill="#d7d4cf"> 470k | compact 37% | S </tspan><tspan fill="#d7875f">▰▰▰▰▰▱▱▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#d7875f">68%</tspan><tspan fill="#d7d4cf"> 4h13m | W </tspan><tspan fill="#d75f5f">▰▰▰▰▰▰▰▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#d75f5f">85%</tspan><tspan fill="#d7d4cf"> 5d3h</tspan></text>
 </svg>

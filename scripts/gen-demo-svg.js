@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 // Regenerate media/demo.svg from the real renderer output.
-// Renders the default `claude` style (three-line layout) with demo data that
-// exercises all three coral tiers (low 47% / mid 68% / high 85%), parses the
-// ANSI the renderer emits, and emits a terminal-card SVG with faithful colors.
+// Renders the default `claude` style on a SINGLE adaptive line (the real
+// statusline look) with demo data that exercises all three coral tiers
+// (low 47% / mid 68% / high 85%), parses the ANSI the renderer emits, and
+// emits a terminal-card SVG.
+//
+// Spacing strategy: tspans FLOW inline (only `fill` changes; no per-span x),
+// so the viewer's font lays out glyphs correctly with no overlap. The whole
+// line is fitted to a fixed content width via textLength + lengthAdjust, so it
+// neither clips nor leaves a gap regardless of which monospace font renders it.
 //
 // Usage: node scripts/gen-demo-svg.js
 const fs = require('node:fs');
@@ -10,7 +16,6 @@ const path = require('node:path');
 const { renderHud } = require('../src/render');
 const { DEFAULT_CONFIG } = require('../src/defaults');
 
-// --- demo stdin payload (now=0 so reset countdowns are deterministic) ---
 const NOW = 0;
 const stdin = {
   model: { id: 'claude-opus-4-8[1m]', display_name: 'Opus 4.8' },
@@ -28,10 +33,10 @@ const stdin = {
 
 const out = renderHud({
   stdin,
-  config: { ...DEFAULT_CONFIG, layout: 'three' },
+  config: { ...DEFAULT_CONFIG, layout: 'auto' },
   theme: 'dark',
   caps: { unicode: true, color256: true, truecolor: true, nerd: false },
-  columns: 200,
+  columns: 240,        // wide enough to keep everything on ONE line
   now: NOW,
   branch: 'main',
 });
@@ -72,7 +77,6 @@ function ansiToSpans(line) {
     const codes = m[1].split(';').filter((s) => s !== '').map(Number);
     if (codes.length === 0 || codes[0] === 0) cur = null;
     else if (codes[0] === 38 && codes[1] === 5) cur = xtermHex(codes[2]);
-    // other SGR codes (dim, etc.) are ignored for the demo
   }
   buf += line.slice(last);
   flush();
@@ -81,48 +85,49 @@ function ansiToSpans(line) {
 
 const xmlEsc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-const lines = out.split('\n').map(ansiToSpans);
+const rawLines = out.split('\n');
+const lines = rawLines.map(ansiToSpans);
 const plainLen = (spans) => spans.reduce((a, s) => a + [...s.text].length, 0);
 const maxCols = Math.max(...lines.map(plainLen));
 
 // --- layout metrics ---
-const CHAR = 8.8;       // monospace advance at 15px
+const ADV = 9.0;        // nominal monospace advance at 15px (used only to size the canvas)
 const FONT = 15;
 const LINE_H = 26;
-const PAD_X = 22;
-const PAD_TOP = 52;     // room for the title bar
+const PAD_X = 24;
+const PAD_TOP = 54;     // room for the title bar
 const PAD_BOTTOM = 22;
-const width = Math.ceil(PAD_X * 2 + maxCols * CHAR);
-const height = Math.ceil(PAD_TOP + lines.length * LINE_H + PAD_BOTTOM);
+const contentW = Math.round(maxCols * ADV);
+const width = contentW + PAD_X * 2;
+const height = PAD_TOP + (lines.length - 1) * LINE_H + PAD_BOTTOM;
 
 const dots = [['#ff5f56', 0], ['#ffbd2e', 1], ['#27c93f', 2]]
-  .map(([c, i]) => `<circle cx="${20 + i * 20}" cy="22" r="6" fill="${c}"/>`)
+  .map(([c, i]) => `<circle cx="${22 + i * 20}" cy="22" r="6" fill="${c}"/>`)
   .join('');
 
 let body = '';
 lines.forEach((spans, row) => {
   const y = PAD_TOP + row * LINE_H;
-  let x = PAD_X;
-  let tspans = '';
-  for (const s of spans) {
-    tspans += `<tspan x="${x.toFixed(1)}" y="${y}" fill="${s.color}">${xmlEsc(s.text)}</tspan>`;
-    x += [...s.text].length * CHAR;
-  }
-  body += tspans;
+  const inner = spans
+    .map((s) => `<tspan fill="${s.color}">${xmlEsc(s.text)}</tspan>`)
+    .join('');
+  // textLength + lengthAdjust fits the whole line to contentW exactly,
+  // so it renders identically regardless of the viewer's monospace font.
+  body += `<text x="${PAD_X}" y="${y}" xml:space="preserve" textLength="${contentW}" lengthAdjust="spacingAndGlyphs">${inner}</text>`;
 });
 
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="${FONT}">
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="${FONT}" font-weight="500">
   <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="#1b1c1e"/>
   <rect x="0" y="0" width="${width}" height="40" rx="10" fill="#26282b"/>
   <rect x="0" y="30" width="${width}" height="10" fill="#26282b"/>
   ${dots}
-  <text xml:space="preserve" font-weight="500">${body}</text>
+  ${body}
 </svg>
 `;
 
 const outPath = path.join(__dirname, '..', 'media', 'demo.svg');
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, svg);
-console.log('wrote', outPath, `(${width}x${height}, ${lines.length} lines, ${maxCols} cols)`);
+console.log('wrote', outPath, `(${width}x${height}, ${lines.length} line(s), ${maxCols} cols)`);
 console.log('--- plain preview ---');
 console.log(out.replace(/\x1b\[[0-9;]*m/g, ''));
