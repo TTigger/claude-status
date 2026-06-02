@@ -1,6 +1,6 @@
 ---
 name: add-style
-description: Use when adding a new visual style to the Claude Code statusline HUD. Covers the full closed loop from registry entry to README, design spec, tests, and changelog.
+description: Use when adding a new visual style to the Claude Code statusline HUD. Covers the full closed loop from registry entry to README, tests, and changelog.
 ---
 
 # Add a New Visual Style
@@ -48,10 +48,9 @@ Follow these steps in order. Do not skip any step — `npm test` will catch miss
 
    Choose the most restrictive `requires` that your new characters actually need.
 
-3. **Add a one-line mockup to two places:**
+3. **Add a one-line mockup to the README "Styles" section.**
 
-   - **README "Styles" section** — add a row to the styles table or a fenced code block mockup matching the existing format. The `test/docdrift.test.js` doc-drift guard checks that every style `name` in the `STYLES` array appears somewhere in `README.md`; the test goes red if the name is absent.
-   - **Design spec Appendix A** (`docs/superpowers/specs/2026-06-02-cc-statusline-design.md`) — add a matching mockup line under Appendix A so the visual catalogue stays current.
+   Add a fenced code block mockup matching the existing format. The `test/docdrift.test.js` doc-drift guard checks that every style `name` in the `STYLES` array appears somewhere in `README.md`; the test goes red if the name is absent. The README Styles gallery is the authoritative public catalogue. If you maintain a local design spec, also update its Appendix A — but that file is not tracked in the repo and is optional.
 
 4. **Run `npm test` and confirm all tests pass.**
 

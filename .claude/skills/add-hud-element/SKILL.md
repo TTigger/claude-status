@@ -16,7 +16,7 @@ Follow these steps in order. Each layer of the render pipeline depends on the pr
    myElement: deriveMyElement(data),   // add your key here
    ```
 
-   Implement `deriveMyElement(data)` in the same file. Keep derivation pure (no side effects). Reference the HUD data sources table in the design spec (`docs/superpowers/specs/2026-06-02-cc-statusline-design.md` §4) for available raw fields.
+   Implement `deriveMyElement(data)` in the same file. Keep derivation pure (no side effects). Reference the HUD data sources table in the maintainer-local design spec §4 (if present; the spec is not tracked in the repo) for available raw fields.
 
 2. **Render it in `src/engine.js` `buildParts` and assign a `group`.**
 
@@ -55,8 +55,8 @@ Follow these steps in order. Each layer of the render pipeline depends on the pr
 
 4. **Update documentation in two places:**
 
-   - **Design spec §4** (`docs/superpowers/specs/2026-06-02-cc-statusline-design.md`) — add a row to the HUD data sources table with: element name, raw data field(s) it reads, derivation notes.
    - **README HUD section** — add a description of the new element so users know it exists and how to enable/disable it via config.
+   - **Maintainer-local design spec §4** (if present; the spec is not tracked in the repo) — add a row to the HUD data sources table with: element name, raw data field(s) it reads, derivation notes.
 
 5. **Add tests in `test/elements.test.js` and `test/engine.test.js`.**
 

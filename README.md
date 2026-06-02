@@ -65,7 +65,7 @@ Sess ▰▰▰▰▰▱ 52% 3h12m | Wk ▰▰▱▱▱ 31% 4d6h
 
 ## Styles
 
-Seven styles are available. Choose with `claude-status config set style <name>`.
+Seven styles are available. Choose with `claude-status style <name>` (shortcut) or `claude-status config set style <name>`.
 
 ### `claude` (default — Claude coral brand)
 
@@ -138,6 +138,8 @@ Configuration is stored in `~/.claude/claude-status.config.json`. Only the keys 
 | `claude-status config list` | Print all current settings |
 | `claude-status config reset [key]` | Reset one key (or all) to defaults |
 
+> **Tip:** `claude-status style` and `claude-status layout` are quick shortcuts. `claude-status style claude` is shorthand for `config set style claude`; `claude-status style` with no argument shows a gallery of all styles (● marks the current one). Likewise, `claude-status layout two` switches layout and `claude-status layout` lists available layouts.
+
 ### Dotted keys for nested settings
 
 ```sh
@@ -199,12 +201,15 @@ claude-status preview --style emoji --layout three
 |---|---|
 | `npx @ttigger/claude-status install` | Install / re-install the HUD into Claude Code |
 | `claude-status uninstall` | Remove the HUD and restore `~/.claude/settings.json` from backup |
+| `claude-status style [<name>]` | No arg: gallery of all styles (● = current). With name: switch style (shortcut for `config set style <name>`). |
+| `claude-status layout [<name>]` | No arg: show current + available layouts. With name: switch layout (shortcut for `config set layout <name>`). |
+| `claude-status alias <name>` | Add a shell alias (e.g. `clc`) for `cc`; writes to shell RC on macOS/Linux, prints `Set-Alias` line on Windows. |
 | `claude-status config set <key> <value>` | Set a config value |
 | `claude-status config get <key>` | Get a config value |
 | `claude-status config list` | List all config values |
 | `claude-status config reset [key]` | Reset to default(s) |
 | `claude-status preview [--style s] [--layout l]` | Live WYSIWYG preview |
-| `claude-status help` | Print help |
+| `claude-status help [<topic>]` | Print help (topics: `styles` `layout` `colors` `cc` `troubleshooting`) |
 
 ---
 
@@ -232,13 +237,15 @@ The `cc` bin is a thin wrapper that calls `claude` and passes all arguments thro
 
 **Name collision on macOS / Linux:** `cc` is the POSIX name for the system C compiler. The installer detects this and warns you on macOS and Linux so you can make an informed choice. Windows has no such collision.
 
-If you would rather use a different alias, pass `--alias` during install:
+**Setting an alias — recommended approach:** run `claude-status alias clc` at any time. On macOS/Linux it appends `alias clc=cc` to `~/.zshrc` or `~/.bashrc` (idempotent — safe to run again). On Windows it prints a `Set-Alias clc cc` line for you to add to your PowerShell `$PROFILE`.
+
+You can also set the alias during install with `--alias`:
 
 ```sh
 npx @ttigger/claude-status install --alias clc
 ```
 
-This registers `clc` instead of `cc` so there is no conflict with the system compiler.
+Either way, `clc` (or whatever name you choose) becomes a shortcut for `cc`, avoiding any conflict with the system compiler.
 
 ---
 

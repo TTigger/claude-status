@@ -15,6 +15,8 @@ node --test test/<file>.test.js # run a single test file
 
 **Releasing** — see `.claude/skills/release` for the release skill (version bump, changelog, tag, publish).
 
+**Shortcut commands (0.2.0+):** `claude-status style [<name>]`, `claude-status layout [<name>]`, and `claude-status alias <name>` are top-level shortcuts. `style`/`layout` with no argument show a gallery / available list; with a name they call `config set` internally. `alias <name>` writes a shell alias to `~/.zshrc` / `~/.bashrc` (macOS/Linux, idempotent) or prints a `Set-Alias` line for PowerShell (Windows). `install --alias <name>` also works.
+
 ## Architecture
 
 | File | Role |
@@ -43,14 +45,14 @@ The installer uses a read–backup–merge–write pattern so that `~/.claude/se
 
 **If you change styles:**
 1. Update the `STYLES` descriptor in `src/registry.js`.
-2. Add a README gallery mockup in `README.md` (Styles section) and a design-spec entry in `docs/` Appendix A.
+2. Add a gallery mockup in the `README.md` **Styles** section. This is the authoritative public catalogue — the design spec is a maintainer-local document (not tracked in the repo).
 3. The `test/docdrift.test.js` doc-drift test enforces that every style `name` in `STYLES` appears literally in `README.md` — it will fail until the README is updated.
 
 **If you add a HUD element:**
 1. `src/elements.js` — add normalisation logic for the new data field.
 2. `src/engine.js` `buildParts` — create the new segment (`{ key, text, group }`) and assign it to a layout group (`env` / `context` / `limits`).
 3. `src/registry.js` `CONFIG_SCHEMA` — add an `'elements.<name>'` dotted key (`{ type: 'bool', default: true }`) so it is configurable.
-4. Update the design spec (docs/) §4 element catalogue.
+4. Update the maintainer-local design spec §4 element catalogue, if present (the spec is not tracked in the repo).
 5. Add tests covering the new element in `test/elements.test.js` and `test/engine.test.js`.
 
 See `.claude/skills/sync-docs` for the skill that checks all four files stay consistent after element changes.

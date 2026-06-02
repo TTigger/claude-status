@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-02
+
+### Added
+- `claude-status style [<name>]`, `layout [<name>]`, and `alias <name>` top-level shortcut commands (shorter than `config set ...`); `style`/`layout` with no argument show a gallery / available list.
+- Per-topic help: `claude-status help <styles|layout|colors|cc|troubleshooting>` now prints real topic guidance.
+
+### Fixed
+- `--alias` is no longer a no-op: `claude-status alias <name>` (and `install --alias <name>`) now writes a shell alias to ~/.zshrc or ~/.bashrc (idempotent), or prints a Set-Alias line for PowerShell on Windows.
+
+### Changed
+- `docs/` (design spec + plan) is no longer tracked in the repo; the README Styles gallery is the authoritative public style catalogue.
+
 ## [0.1.3] - 2026-06-02
 
 ### Fixed
