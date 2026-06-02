@@ -6,6 +6,8 @@ const { runInstall, runUninstall } = require('../src/installer/install');
 const { loadConfig, getDotted, setConfig, resetConfig } = require('../src/config');
 const { CONFIG_SCHEMA, STYLES, LAYOUTS } = require('../src/registry');
 const { renderSample, galleryLine } = require('../src/preview');
+const { HELP, topicHelp } = require('../src/help');
+const { detectShell, writeAlias } = require('../src/installer/alias');
 
 function parseFlags(args) {
   const flags = {}; const positional = [];
@@ -16,20 +18,14 @@ function parseFlags(args) {
   return { flags, positional };
 }
 
-const HELP = `claude-status — Claude Code usage HUD + cc launcher
-
-Usage:
-  claude-status install [--style <name>] [--alias <name>] [--dry-run]
-  claude-status uninstall
-  claude-status config set <key> <value>
-  claude-status config get <key>
-  claude-status config list
-  claude-status config reset [<key>]
-  claude-status preview [--style <name>] [--layout <name>]
-  claude-status help [styles|layout|colors|cc|troubleshooting]
-
-Styles: ${STYLES.map(s => s.name).join(', ')}
-Layouts: ${LAYOUTS.map(l => l.name).join(', ')}`;
+function applyConfigValue(key, value) {
+  const cp = configPath(os.homedir());
+  const r = setConfig(cp, key, value);
+  if (!r.ok) { console.error(r.error); process.exit(1); }
+  console.log(`✓ ${key} → ${r.value}. 目前效果：`);
+  const cfg = loadConfig(cp);
+  console.log(renderSample({ style: cfg.style, layout: cfg.layout, columns: parseInt(process.env.COLUMNS, 10) || 100 }));
+}
 
 function cmdInstall(flags) {
   const summary = runInstall({
@@ -51,6 +47,9 @@ function cmdInstall(flags) {
   if (summary.ccCollision) console.log('⚠ "cc" already exists on PATH (C compiler?). Consider: claude-status install --alias clc');
   console.log(summary.dryRun ? 'Preview:' : 'Open a new Claude Code session to see the HUD. Preview now:');
   console.log(renderSample({ style: summary.chosenStyle, columns: parseInt(process.env.COLUMNS,10) || 100 }));
+  if (typeof flags.alias === 'string') {
+    doAlias(flags.alias);
+  }
 }
 
 function cmdConfig(positional, flags) {
@@ -89,9 +88,56 @@ function cmdPreview(flags) {
   }));
 }
 
+function cmdStyle(positional) {
+  const cp = configPath(os.homedir());
+  if (!positional[0]) {
+    const cfg = loadConfig(cp);
+    const currentStyle = cfg.style;
+    console.log('Styles (● = current):');
+    for (const s of STYLES) {
+      console.log(`  ${s.name === currentStyle ? '●' : '○'} ${s.name.padEnd(8)} ${galleryLine(s.name, 80)}`);
+    }
+    return;
+  }
+  applyConfigValue('style', positional[0]);
+}
+
+function cmdLayout(positional) {
+  const cp = configPath(os.homedir());
+  if (!positional[0]) {
+    const cfg = loadConfig(cp);
+    console.log(`Current layout: ${cfg.layout}. Available: ${LAYOUTS.map(l => l.name).join(', ')}`);
+    return;
+  }
+  applyConfigValue('layout', positional[0]);
+}
+
+function doAlias(name) {
+  const { shell, profilePath } = detectShell(process.env, process.platform);
+  const r = writeAlias(profilePath, shell, name);
+  if (r.reason === 'written') {
+    console.log(`✓ alias ${name} → cc added to ${r.profilePath}. Restart your shell (or source it) to use it.`);
+  } else if (r.reason === 'exists') {
+    console.log(`✓ alias ${name} already present in ${r.profilePath}.`);
+  } else if (r.reason === 'no-profile') {
+    console.log(`Add this line to your PowerShell $PROFILE to enable the alias:`);
+    console.log('  ' + r.snippet);
+  }
+}
+
+function cmdAlias(positional) {
+  const name = positional[0];
+  if (!name) { console.error('Usage: claude-status alias <name>'); process.exit(1); }
+  doAlias(name);
+}
+
 function main() {
   const argv = process.argv.slice(2);
-  if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h' || argv[0] === 'help') {
+  if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h') {
+    console.log(HELP); return;
+  }
+  if (argv[0] === 'help') {
+    if (argv[1]) { console.log(topicHelp(argv[1])); return; }
     console.log(HELP); return;
   }
   if (argv[0] === '--version') { console.log(require('../package.json').version); return; }
@@ -101,6 +147,9 @@ function main() {
     case 'uninstall': runUninstall({ home: os.homedir() }); console.log('✓ uninstalled'); return;
     case 'config': return cmdConfig(positional, flags);
     case 'preview': return cmdPreview(flags);
+    case 'style': return cmdStyle(positional);
+    case 'layout': return cmdLayout(positional);
+    case 'alias': return cmdAlias(positional);
     default: console.error(`Unknown command: ${argv[0]}`); console.log(HELP); process.exit(1);
   }
 }
