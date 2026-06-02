@@ -33,4 +33,6 @@ function tokensK(tokens, decimals = false) {
   return decimals ? `${k.toFixed(1)}k` : `${Math.round(k)}k`;
 }
 
-module.exports = { clampPct, tier, bar, humanizeDuration, tokensK };
+function stripAnsi(s) { return s.replace(/\x1b\[[0-9;]*m/g, ''); }
+
+module.exports = { clampPct, tier, bar, humanizeDuration, tokensK, stripAnsi };
