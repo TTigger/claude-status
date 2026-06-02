@@ -26,3 +26,23 @@ test('loadConfig deep-merges file over defaults', () => {
   assert.strictEqual(loadConfig(p).layout, 'auto');
   fs.unlinkSync(p);
 });
+
+const { coerceValue } = require('../src/config');
+
+test('coerceValue validates choice keys', () => {
+  assert.deepStrictEqual(coerceValue('style', 'tech'), { ok: true, value: 'tech' });
+  const bad = coerceValue('style', 'nope');
+  assert.strictEqual(bad.ok, false);
+  assert.ok(bad.error.includes('claude')); // lists valid choices
+});
+
+test('coerceValue parses bool and int with range', () => {
+  assert.deepStrictEqual(coerceValue('elements.weekly', 'false'), { ok: true, value: false });
+  assert.deepStrictEqual(coerceValue('refreshIntervalSec', '10'), { ok: true, value: 10 });
+  assert.strictEqual(coerceValue('refreshIntervalSec', '0').ok, false); // below min 1
+});
+
+test('coerceValue barWidth accepts auto or int', () => {
+  assert.deepStrictEqual(coerceValue('barWidth', 'auto'), { ok: true, value: 'auto' });
+  assert.deepStrictEqual(coerceValue('barWidth', '12'), { ok: true, value: 12 });
+});
