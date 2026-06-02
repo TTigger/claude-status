@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1056" height="76" viewBox="0 0 1056 76" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="500">
-  <rect x="0" y="0" width="1056" height="76" rx="10" fill="#1b1c1e"/>
-  <rect x="0" y="0" width="1056" height="40" rx="10" fill="#26282b"/>
-  <rect x="0" y="30" width="1056" height="10" fill="#26282b"/>
+  <rect x="0" y="0" width="1056" height="76" fill="#1b1c1e"/>
+  <rect x="0" y="0" width="1056" height="40" fill="#26282b"/>
   <circle cx="22" cy="22" r="6" fill="#ff5f56"/><circle cx="42" cy="22" r="6" fill="#ffbd2e"/><circle cx="62" cy="22" r="6" fill="#27c93f"/>
   <text x="24" y="54" xml:space="preserve" textLength="1008" lengthAdjust="spacingAndGlyphs"><tspan fill="#d7d4cf">Opus 4.8·1M | my-app | ⎇ main | Ctx </tspan><tspan fill="#ffaf87">▰▰▰▰▱▱▱▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#ffaf87">47%</tspan><tspan fill="#d7d4cf"> 470k | compact 37% | S </tspan><tspan fill="#d7875f">▰▰▰▰▰▱▱▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#d7875f">68%</tspan><tspan fill="#d7d4cf"> 4h13m | W </tspan><tspan fill="#d75f5f">▰▰▰▰▰▰▰▱</tspan><tspan fill="#d7d4cf"> </tspan><tspan fill="#d75f5f">85%</tspan><tspan fill="#d7d4cf"> 5d3h</tspan></text>
 </svg>

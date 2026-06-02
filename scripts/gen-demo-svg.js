@@ -122,9 +122,8 @@ lines.forEach((spans, row) => {
 });
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="${FONT}" font-weight="500">
-  <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="#1b1c1e"/>
-  <rect x="0" y="0" width="${width}" height="40" rx="10" fill="#26282b"/>
-  <rect x="0" y="30" width="${width}" height="10" fill="#26282b"/>
+  <rect x="0" y="0" width="${width}" height="${height}" fill="#1b1c1e"/>
+  <rect x="0" y="0" width="${width}" height="40" fill="#26282b"/>
   ${dots}
   ${body}
 </svg>
