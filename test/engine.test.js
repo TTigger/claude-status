@@ -47,6 +47,23 @@ test('buildParts produces env+context+limits segments for full sample (ascii)', 
   assert.strictEqual(byKey.weekly, 'Wk [##------] 31% 4d6h');
 });
 
+test('buildParts does not double-tag 1M when display_name already says so', () => {
+  // Real Claude Code sends display_name like "Opus 4.8 (1M context)";
+  // appending another ·1M would duplicate it.
+  const mk = (name) => {
+    const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+    els.model = { name, context1m: true };
+    const parts = buildParts({
+      els, style: styleByName('ascii'), palette,
+      config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+      opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+    });
+    return stripAnsi(parts.find((p) => p.key === 'model').text);
+  };
+  assert.strictEqual(mk('Opus 4.8 (1M context)'), 'Opus 4.8 (1M context)'); // no extra ·1M
+  assert.strictEqual(mk('Opus 4.8'), 'Opus 4.8·1M');                        // still tagged when absent
+});
+
 test('buildParts drops tokens/autocompact when opts disable them', () => {
   const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
   els.branch = 'main';

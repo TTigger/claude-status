@@ -32,7 +32,10 @@ function buildParts({ els, style, palette, config, now, opts }) {
 
   // env group
   if (config.elements.model && els.model) {
-    const name = els.model.name + (els.model.context1m ? '·1M' : '');
+    // Only append ·1M when the display name doesn't already advertise it
+    // (real Claude Code sends names like "Opus 4.8 (1M context)").
+    const already1m = /1m/i.test(els.model.name);
+    const name = els.model.name + (els.model.context1m && !already1m ? '·1M' : '');
     push('model', (icons.model ? icons.model + ' ' : '') + name, 'env');
   }
   if (config.elements.project && els.project) {

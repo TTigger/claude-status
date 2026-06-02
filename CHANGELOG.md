@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-06-02
+
+### Fixed
+
+- Model name no longer shows a duplicate `·1M` when Claude Code's `display_name` already contains "1M" (e.g. `Opus 4.8 (1M context)`). The `·1M` tag is now only appended when the name doesn't already advertise it.
+
 ## [0.1.2] - 2026-06-02
 
 ### Fixed
