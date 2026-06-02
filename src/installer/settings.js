@@ -5,7 +5,9 @@ function mergeStatusLine(settings, command, refreshInterval) {
 }
 
 function readSettings(p) {
-  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
+  // Strip a leading UTF-8 BOM (some editors add one) so JSON.parse doesn't throw
+  // and silently discard the user's existing settings on merge.
+  try { return JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, '')); } catch { return {}; }
 }
 
 function writeSettingsWithBackup(settingsPath, backupPath, nextObj) {

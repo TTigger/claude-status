@@ -12,7 +12,7 @@ function readStdin() {
 }
 function readTheme(settingsPath) {
   try {
-    const s = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    const s = JSON.parse(fs.readFileSync(settingsPath, 'utf8').replace(/^﻿/, ''));
     return /^light/.test(s.theme || '') ? 'light' : 'dark';
   } catch { return 'dark'; }
 }

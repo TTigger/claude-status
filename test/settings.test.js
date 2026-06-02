@@ -18,3 +18,16 @@ test('mergeStatusLine overwrites only statusLine if present', () => {
   assert.strictEqual(after.statusLine.command, 'claude-status-render');
   assert.strictEqual(after.statusLine.refreshInterval, 15);
 });
+
+test('readSettings tolerates a UTF-8 BOM (does not wipe existing keys)', () => {
+  const fs = require('node:fs');
+  const os = require('node:os');
+  const path = require('node:path');
+  const { readSettings } = require('../src/installer/settings');
+  const p = path.join(os.tmpdir(), 'bom-settings-' + process.pid + '.json');
+  fs.writeFileSync(p, '﻿' + JSON.stringify({ theme: 'dark', permissions: { allow: ['KEEPME'] } }));
+  const parsed = readSettings(p);
+  assert.strictEqual(parsed.theme, 'dark');
+  assert.deepStrictEqual(parsed.permissions, { allow: ['KEEPME'] });
+  fs.unlinkSync(p);
+});

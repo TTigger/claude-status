@@ -14,7 +14,7 @@ function deepMerge(base, over) {
 
 function loadConfig(configPath) {
   try {
-    const raw = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const raw = JSON.parse(fs.readFileSync(configPath, 'utf8').replace(/^﻿/, ''));
     return deepMerge(DEFAULT_CONFIG, raw);
   } catch {
     return deepMerge(DEFAULT_CONFIG, {});
