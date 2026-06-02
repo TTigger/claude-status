@@ -23,3 +23,40 @@ test('renderMetric high tier uses high color code', () => {
   });
   assert.ok(out.includes('\x1b[31m')); // 8-color red
 });
+
+const { buildParts } = require('../src/engine');
+const { buildElements } = require('../src/elements');
+const { SAMPLE, SAMPLE_NOW } = require('../src/fixtures');
+const { DEFAULT_CONFIG } = require('../src/defaults');
+
+test('buildParts produces env+context+limits segments for full sample (ascii)', () => {
+  const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+  els.branch = 'main';
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+    opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+  });
+  const byKey = Object.fromEntries(parts.map(p => [p.key, stripAnsi(p.text)]));
+  assert.strictEqual(byKey.model, 'Opus 4.8·1M');
+  assert.strictEqual(byKey.project, 'claude-status');
+  assert.strictEqual(byKey.branch, 'main');
+  assert.strictEqual(byKey.context, 'Ctx [##------] 24% 47k');
+  assert.strictEqual(byKey.autoCompact, 'compact 60%');
+  assert.strictEqual(byKey.session, 'Ses [####----] 52% 3h12m');
+  assert.strictEqual(byKey.weekly, 'Wk [##------] 31% 4d6h');
+});
+
+test('buildParts drops tokens/autocompact when opts disable them', () => {
+  const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+  els.branch = 'main';
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+    opts: { includeTokens: false, includeAutoCompact: false, resetPrecision: 'short', bars: false },
+  });
+  const keys = parts.map(p => p.key);
+  assert.ok(!keys.includes('autoCompact'));
+  const ctx = parts.find(p => p.key === 'context');
+  assert.strictEqual(stripAnsi(ctx.text), 'Ctx 24%'); // no bar, no tokens
+});
