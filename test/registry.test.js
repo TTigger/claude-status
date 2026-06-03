@@ -22,3 +22,8 @@ test('CONFIG_SCHEMA enumerates fixed-choice keys', () => {
     LAYOUTS.map(l => l.name).sort());
   assert.deepStrictEqual(CONFIG_SCHEMA.palette.choices, ['auto', 'light', 'dark']);
 });
+
+test('elements.cost is a registered boolean defaulting to true', () => {
+  assert.strictEqual(CONFIG_SCHEMA['elements.cost'].type, 'bool');
+  assert.strictEqual(CONFIG_SCHEMA['elements.cost'].default, true);
+});

@@ -52,6 +52,7 @@ const CONFIG_SCHEMA = {
   'elements.autoCompact': { type: 'bool', default: true },
   'elements.session': { type: 'bool', default: true },
   'elements.weekly': { type: 'bool', default: true },
+  'elements.cost': { type: 'bool', default: true },
   'autoCompact.thresholdPct': { type: 'number', min: 0, max: 100, default: 83.5 },
   refreshIntervalSec: { type: 'int', min: 1, max: 3600, default: 30 },
 };

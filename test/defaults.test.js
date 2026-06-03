@@ -11,3 +11,7 @@ test('default config matches spec', () => {
   assert.strictEqual(DEFAULT_CONFIG.autoCompact.thresholdPct, 83.5);
   assert.strictEqual(DEFAULT_CONFIG.refreshIntervalSec, 30);
 });
+
+test('DEFAULT_CONFIG.elements.cost defaults to true', () => {
+  assert.strictEqual(DEFAULT_CONFIG.elements.cost, true);
+});
