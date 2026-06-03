@@ -23,10 +23,20 @@ test('default (claude/auto) renders single line with all segments', () => {
   assert.ok(plain.includes('31%'));
 });
 
-test('no rate_limits => session/weekly replaced by waiting note', () => {
+test('no rate_limits + cost on (default) => shows cost estimate, not waiting note', () => {
   const stdin = JSON.parse(JSON.stringify(SAMPLE));
   delete stdin.rate_limits;
   const out = stripAnsi(renderHud({ ...base, stdin, config: DEFAULT_CONFIG }));
+  assert.ok(out.includes('est'), 'shows est marker');
+  assert.ok(out.includes('$'), 'shows dollar amount');
+  assert.ok(!out.includes('waiting for first message'), 'no waiting note when cost shown');
+});
+
+test('no rate_limits + cost off => waiting note returns', () => {
+  const stdin = JSON.parse(JSON.stringify(SAMPLE));
+  delete stdin.rate_limits;
+  const cfg = { ...DEFAULT_CONFIG, elements: { ...DEFAULT_CONFIG.elements, cost: false } };
+  const out = stripAnsi(renderHud({ ...base, stdin, config: cfg }));
   assert.ok(out.includes('waiting for first message'));
 });
 

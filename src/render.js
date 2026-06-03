@@ -22,9 +22,10 @@ function renderHud(ctx) {
     : config.barWidth;
 
   const noLimits = !els.session && !els.weekly;
+  const costShown = !!(config.elements.cost && els.cost && els.cost.isApiKey);
   const build = (opts) => {
     const parts = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts });
-    if (noLimits && (config.elements.session || config.elements.weekly)) {
+    if (noLimits && !costShown && (config.elements.session || config.elements.weekly)) {
       parts.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits' });
     }
     return parts;
