@@ -31,6 +31,11 @@ function buildElements(stdin, opts) {
 
   const acLeft = Math.max(0, Math.round(opts.autoCompactThresholdPct - usedPct));
 
+  const session = mk(rl.five_hour);
+  const weekly = mk(rl.seven_day);
+  const usd = (stdin.cost && typeof stdin.cost.total_cost_usd === 'number') ? stdin.cost.total_cost_usd : 0;
+  const isApiKey = session === null && weekly === null;
+
   return {
     model,
     project: basename((stdin.workspace || {}).project_dir) ||
@@ -38,8 +43,9 @@ function buildElements(stdin, opts) {
     branch: null, // resolved by render caller via git
     context: { pct: clampPct(usedPct), tokensK: Math.round(usedTokens / 1000), sizeK: Math.round(size / 1000) },
     autoCompact: { leftPct: acLeft },
-    session: mk(rl.five_hour),
-    weekly: mk(rl.seven_day),
+    session,
+    weekly,
+    cost: { usd, isApiKey },
   };
 }
 

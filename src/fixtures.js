@@ -12,7 +12,10 @@ const SAMPLE = {
     five_hour: { used_percentage: 52, resets_at: 1717400000 },
     seven_day: { used_percentage: 31, resets_at: 1717755680 },
   },
+  cost: { total_cost_usd: 0.0123, total_duration_ms: 45000, total_api_duration_ms: 2300, total_lines_added: 0, total_lines_removed: 0 },
 };
 // "now" so sample resets render as 3h12m / 4d6h deterministically:
 const SAMPLE_NOW = 1717400000 - (3 * 3600 + 12 * 60);
-module.exports = { SAMPLE, SAMPLE_NOW };
+const SAMPLE_APIKEY = JSON.parse(JSON.stringify(SAMPLE));
+delete SAMPLE_APIKEY.rate_limits;
+module.exports = { SAMPLE, SAMPLE_NOW, SAMPLE_APIKEY };

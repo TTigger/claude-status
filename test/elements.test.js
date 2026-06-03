@@ -30,3 +30,24 @@ test('non-1m model has context1m false', () => {
   assert.strictEqual(e.model.context1m, false);
   assert.strictEqual(e.context.sizeK, 200);
 });
+
+const { SAMPLE_APIKEY } = require('../src/fixtures');
+
+test('cost: usd from stdin, isApiKey false when rate_limits present', () => {
+  const e = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+  assert.strictEqual(e.cost.usd, 0.0123);
+  assert.strictEqual(e.cost.isApiKey, false);
+});
+
+test('cost: isApiKey true when rate_limits absent', () => {
+  const e = buildElements(SAMPLE_APIKEY, { autoCompactThresholdPct: 83.5 });
+  assert.strictEqual(e.cost.isApiKey, true);
+  assert.strictEqual(e.cost.usd, 0.0123);
+});
+
+test('cost: usd is 0 when stdin has no cost object', () => {
+  const stdin = JSON.parse(JSON.stringify(SAMPLE_APIKEY));
+  delete stdin.cost;
+  const e = buildElements(stdin, { autoCompactThresholdPct: 83.5 });
+  assert.strictEqual(e.cost.usd, 0);
+});
