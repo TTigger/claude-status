@@ -37,6 +37,12 @@ function cmdInstall(flags) {
       try { execSync('npm install -g @ttigger/claude-status', { stdio: 'ignore' }); } catch {}
     },
     resolveCc: () => { try { return execSync('command -v cc', { stdio: ['ignore','pipe','ignore'] }).toString().trim() || null; } catch { return null; } },
+    resolveCs: () => {
+      try {
+        const cmd = process.platform === 'win32' ? 'where cs' : 'command -v cs';
+        return execSync(cmd, { stdio: ['ignore','pipe','ignore'] }).toString().trim() || null;
+      } catch { return null; }
+    },
   });
   if (summary.dryRun) {
     console.log(`[dry-run] no changes written. Would install style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
@@ -45,6 +51,7 @@ function cmdInstall(flags) {
     console.log(`✓ installed. style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
   }
   if (summary.ccCollision) console.log('⚠ "cc" already exists on PATH (C compiler?). Consider: claude-status install --alias clc');
+  if (summary.csCollision) console.log('⚠ "cs" already exists on PATH (coursier?). Our cs may shadow it; use a custom alias instead: claude-status alias <name> --for self');
   console.log(summary.dryRun ? 'Preview:' : 'Open a new Claude Code session to see the HUD. Preview now:');
   console.log(renderSample({ style: summary.chosenStyle, columns: parseInt(process.env.COLUMNS,10) || 100 }));
   if (typeof flags.alias === 'string') {
@@ -112,11 +119,11 @@ function cmdLayout(positional) {
   applyConfigValue('layout', positional[0]);
 }
 
-function doAlias(name) {
+function doAlias(name, target = 'cc') {
   const { shell, profilePath } = detectShell(process.env, process.platform);
-  const r = writeAlias(profilePath, shell, name);
+  const r = writeAlias(profilePath, shell, name, target);
   if (r.reason === 'written') {
-    console.log(`✓ alias ${name} → cc added to ${r.profilePath}. Restart your shell (or source it) to use it.`);
+    console.log(`✓ alias ${name} → ${target} added to ${r.profilePath}. Restart your shell (or source it) to use it.`);
   } else if (r.reason === 'exists') {
     console.log(`✓ alias ${name} already present in ${r.profilePath}.`);
   } else if (r.reason === 'no-profile') {
@@ -125,10 +132,18 @@ function doAlias(name) {
   }
 }
 
-function cmdAlias(positional) {
+function cmdAlias(positional, flags) {
+  let target = 'cc';
+  if (flags.for === 'self') {
+    target = 'claude-status';
+  } else if (flags.for === 'cc' || flags.for === undefined) {
+    target = 'cc';
+  } else {
+    console.error('--for must be "cc" or "self"'); process.exit(1);
+  }
   const name = positional[0];
-  if (!name) { console.error('Usage: claude-status alias <name>'); process.exit(1); }
-  doAlias(name);
+  if (!name) { console.error('Usage: claude-status alias <name> [--for cc|self]'); process.exit(1); }
+  doAlias(name, target);
 }
 
 function main() {
@@ -149,7 +164,7 @@ function main() {
     case 'preview': return cmdPreview(flags);
     case 'style': return cmdStyle(positional);
     case 'layout': return cmdLayout(positional);
-    case 'alias': return cmdAlias(positional);
+    case 'alias': return cmdAlias(positional, flags);
     default: console.error(`Unknown command: ${argv[0]}`); console.log(HELP); process.exit(1);
   }
 }

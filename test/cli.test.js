@@ -87,3 +87,27 @@ test('alias clc mentions clc in output', () => {
   const out = run(['alias', 'clc'], { HOME: home, USERPROFILE: home, SHELL: '/bin/bash' });
   assert.ok(out.includes('clc'), `expected 'clc' in: ${out}`);
 });
+
+test('alias qq --for self writes claude-status alias', () => {
+  const home = makeTmpHome();
+  const out = run(['alias', 'qq', '--for', 'self'], { HOME: home, USERPROFILE: home, SHELL: '/bin/bash' });
+  assert.ok(out.includes('claude-status'), `expected 'claude-status' in: ${out}`);
+  assert.ok(out.includes('qq'), `expected 'qq' in: ${out}`);
+});
+
+test('alias zz --for bogus exits non-zero and mentions --for', () => {
+  const home = makeTmpHome();
+  try {
+    run(['alias', 'zz', '--for', 'bogus'], { HOME: home, USERPROFILE: home, SHELL: '/bin/bash' });
+    assert.fail('should have thrown');
+  } catch (e) {
+    const combined = e.stderr.toString() + e.stdout.toString();
+    assert.ok(combined.includes('--for'), `expected '--for' in: ${combined}`);
+  }
+});
+
+test('help cc includes cs and --for self', () => {
+  const out = run(['help', 'cc']);
+  assert.ok(out.includes('cs'), `expected 'cs' in: ${out}`);
+  assert.ok(out.includes('--for self'), `expected '--for self' in: ${out}`);
+});

@@ -9,7 +9,7 @@ Usage:
   claude-status uninstall
   claude-status style [<name>]            # show gallery, or switch style
   claude-status layout [<name>]           # show layouts, or switch layout
-  claude-status alias <name>              # add a shell alias for cc (e.g. clc)
+  claude-status alias <name> [--for cc|self]   # cc launcher alias, or a short name for claude-status itself
   claude-status config set <key> <value>
   claude-status config get <key>
   claude-status config list
@@ -18,7 +18,9 @@ Usage:
   claude-status help [styles|layout|colors|cc|troubleshooting]
 
 Styles: ${STYLES.map(s => s.name).join(', ')}
-Layouts: ${LAYOUTS.map(l => l.name).join(', ')}`;
+Layouts: ${LAYOUTS.map(l => l.name).join(', ')}
+
+Tip: \`cs\` is a built-in short command — \`cs style claude\` works the same as \`claude-status style claude\`.`;
 
 function topicHelp(topic) {
   switch (topic) {
@@ -107,6 +109,19 @@ function _ccHelp() {
 
 The \`cc\` bin is a thin wrapper: \`cc [args...]\` is equivalent to
 \`claude [args...]\`. It exists purely for convenience — fewer keystrokes.
+
+cs — Built-in short alias for the claude-status CLI:
+  \`cs\` is a second built-in bin pointing at \`claude-status\` itself, so
+  \`cs style ...\`, \`cs alias ...\`, \`cs help cc\` etc. all work identically
+  to the longer form.
+
+  You can also create your own short name for claude-status with:
+    claude-status alias <name> --for self
+  This writes a shell alias pointing at \`claude-status\` (not \`claude\`).
+
+  Note: \`cs\` is also the name of the Coursier Scala build tool. If
+  \`cs\` is already on your PATH, our \`cs\` bin may shadow it. In that
+  case use a custom alias instead: claude-status alias <name> --for self
 
 Name collision (macOS / Linux):
   On POSIX systems \`cc\` is the standard name for the C compiler (usually
