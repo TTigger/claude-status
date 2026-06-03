@@ -54,3 +54,27 @@ test('dry run reports the plan but makes no filesystem changes', () => {
   assert.strictEqual(globalInstallCalled, false, 'dry run must not run the global install');
   assert.ok(!fs.existsSync(path.join(home, '.claude')), 'dry run must not create .claude');
 });
+
+test('csCollision is true when resolveCs finds coursier on PATH', () => {
+  const home = tmpHome();
+  const summary = runInstall({
+    home, env: {}, platform: 'linux',
+    style: null, refreshInterval: 30,
+    globalInstall: () => {},
+    resolveCc: () => null,
+    resolveCs: () => '/usr/local/bin/cs',
+  });
+  assert.strictEqual(summary.csCollision, true);
+});
+
+test('csCollision is false when resolveCs returns null', () => {
+  const home = tmpHome();
+  const summary = runInstall({
+    home, env: {}, platform: 'linux',
+    style: null, refreshInterval: 30,
+    globalInstall: () => {},
+    resolveCc: () => null,
+    resolveCs: () => null,
+  });
+  assert.strictEqual(summary.csCollision, false);
+});

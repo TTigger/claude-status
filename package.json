@@ -7,7 +7,8 @@
   "bin": {
     "claude-status": "bin/claude-status.js",
     "claude-status-render": "bin/claude-status-render.js",
-    "cc": "bin/cc.js"
+    "cc": "bin/cc.js",
+    "cs": "bin/claude-status.js"
   },
   "files": ["bin/", "src/", "README.md", "LICENSE"],
   "scripts": { "test": "node --test" },

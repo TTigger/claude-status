@@ -7,7 +7,7 @@ const { ccCollides } = require('./alias');
 const { CONFIG_SCHEMA } = require('../registry');
 
 function runInstall(opts) {
-  const { home, env, platform, style, refreshInterval, globalInstall, resolveCc, dryRun } = opts;
+  const { home, env, platform, style, refreshInterval, globalInstall, resolveCc, resolveCs, dryRun } = opts;
 
   const caps = capabilities(env, platform);
   const recommended = recommendStyle(caps);
@@ -39,6 +39,7 @@ function runInstall(opts) {
     chosenStyle: chosen,
     caps,
     ccCollision: ccCollides(platform, resolveCc || (() => null)),
+    csCollision: !!(resolveCs || (() => null))(),
     settingsPath: settingsPath(home),
     configPath: cp,
     dryRun: !!dryRun,
