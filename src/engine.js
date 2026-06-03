@@ -1,6 +1,11 @@
 const { bar, tier, humanizeDuration, tokensK } = require('./format');
 const { colorize } = require('./palette');
 
+function formatUsd(usd) {
+  const n = typeof usd === 'number' ? usd : 0;
+  return '$' + (n < 1 ? n.toFixed(4) : n.toFixed(2));
+}
+
 function renderMetric({ label, pct, suffix, style, palette, thresholds, barWidth }) {
   const tierName = tier(pct, thresholds);
   const glyphs = style.bar;
@@ -68,6 +73,11 @@ function buildParts({ els, style, palette, config, now, opts }) {
   const limit = (key, lbl, el) => {
     if (!el) return;
     const reset = fmtReset(el.resetsAt, now, opts.resetPrecision);
+    if (el.pct >= 100) {
+      const limitWord = colorize('LIMIT', 'high', palette);
+      push(key, `${lc(lbl)} ${limitWord}${reset ? ' ' + reset : ''}`, 'limits');
+      return;
+    }
     const text = opts.bars
       ? renderMetric({ label: lc(lbl), pct: el.pct, suffix: reset, style, palette, thresholds, barWidth })
       : `${lc(lbl)} ${colorizePct(el.pct, thresholds, palette)}${reset ? ' ' + reset : ''}`;
@@ -75,6 +85,11 @@ function buildParts({ els, style, palette, config, now, opts }) {
   };
   if (config.elements.session) limit('session', L.sess, els.session);
   if (config.elements.weekly) limit('weekly', L.wk, els.weekly);
+
+  if (config.elements.cost && els.cost && els.cost.isApiKey) {
+    const ctxK = els.context ? tokensK(els.context.tokensK * 1000, style.decimals) : '0k';
+    push('cost', `${formatUsd(els.cost.usd)} ${lc('est')} · ${ctxK} ctx`, 'limits');
+  }
 
   return parts;
 }

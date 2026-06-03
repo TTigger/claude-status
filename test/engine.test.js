@@ -26,7 +26,7 @@ test('renderMetric high tier uses high color code', () => {
 
 const { buildParts } = require('../src/engine');
 const { buildElements } = require('../src/elements');
-const { SAMPLE, SAMPLE_NOW } = require('../src/fixtures');
+const { SAMPLE, SAMPLE_NOW, SAMPLE_APIKEY } = require('../src/fixtures');
 const { DEFAULT_CONFIG } = require('../src/defaults');
 
 test('buildParts produces env+context+limits segments for full sample (ascii)', () => {
@@ -76,4 +76,55 @@ test('buildParts drops tokens/autocompact when opts disable them', () => {
   assert.ok(!keys.includes('autoCompact'));
   const ctx = parts.find(p => p.key === 'context');
   assert.strictEqual(stripAnsi(ctx.text), 'Ctx 24%'); // no bar, no tokens
+});
+
+test('cost segment shows in API-key mode (no rate_limits) with est marker', () => {
+  const els = buildElements(SAMPLE_APIKEY, { autoCompactThresholdPct: 83.5 });
+  els.branch = 'main';
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+    opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+  });
+  const cost = parts.find(p => p.key === 'cost');
+  assert.ok(cost, 'cost segment present in API-key mode');
+  assert.strictEqual(stripAnsi(cost.text), '$0.0123 est · 47k ctx');
+  // and session/weekly must NOT be present (no rate_limits)
+  assert.ok(!parts.find(p => p.key === 'session'));
+});
+
+test('cost segment hidden in subscription mode (rate_limits present)', () => {
+  const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+  els.branch = 'main';
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+    opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+  });
+  assert.ok(!parts.find(p => p.key === 'cost'), 'no cost when rate_limits present');
+});
+
+test('cost segment respects elements.cost=false', () => {
+  const els = buildElements(SAMPLE_APIKEY, { autoCompactThresholdPct: 83.5 });
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii', elements: { ...DEFAULT_CONFIG.elements, cost: false } },
+    now: SAMPLE_NOW,
+    opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+  });
+  assert.ok(!parts.find(p => p.key === 'cost'));
+});
+
+test('session at 100% renders LIMIT instead of a bar', () => {
+  const els = buildElements(SAMPLE, { autoCompactThresholdPct: 83.5 });
+  els.session = { pct: 100, resetsAt: els.session.resetsAt };
+  els.branch = 'main';
+  const parts = buildParts({
+    els, style: styleByName('ascii'), palette,
+    config: { ...DEFAULT_CONFIG, style: 'ascii' }, now: SAMPLE_NOW,
+    opts: { includeTokens: true, includeAutoCompact: true, resetPrecision: 'full', bars: true },
+  });
+  const s = parts.find(p => p.key === 'session');
+  assert.match(stripAnsi(s.text), /^Ses LIMIT /);
+  assert.doesNotMatch(stripAnsi(s.text), /\[#*-*\]/); // no bar
 });
