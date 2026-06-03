@@ -11,12 +11,12 @@ This is the canonical closed-loop maintenance map for `@ttigger/claude-status`. 
 
 | Change | Source of truth | Also update | Tests that guard it |
 |--------|----------------|-------------|---------------------|
-| Add or rename a **style** | `STYLES` array in `src/registry.js` | README "Styles" gallery entry (authoritative public catalogue); maintainer-local design spec Appendix A mockup (optional, not in repo) | `test/render.test.js` (per-style smoke); `test/docdrift.test.js` (README guard — goes red if style name absent from README) |
-| Change a **style descriptor field** (bar chars, colorMode, labels, icons, requires, decimals…) | `STYLES` entry in `src/registry.js` | Maintainer-local design spec Appendix A if visual output changes (optional, not in repo) | `test/render.test.js` smoke test |
+| Add or rename a **style** | `STYLES` array in `src/registry.js` | Run `node scripts/sync-readme-styles.js` to regenerate the README "The HUD" line + Styles gallery from real output (never hand-edit those blocks) | `test/render.test.js` (per-style smoke); `test/docdrift.test.js` (style name present); `test/readme-mockups.test.js` (mockup byte-matches render) |
+| Change a **style descriptor field** (bar chars, colorMode, labels, icons, requires, decimals…) | `STYLES` entry in `src/registry.js` | Run `node scripts/sync-readme-styles.js` (the rendered output changed → README mockups must too) | `test/render.test.js` smoke; `test/readme-mockups.test.js` (will go red until you re-sync) |
 | Add or rename a **layout** | `LAYOUTS` in `src/registry.js` | README layout docs; design spec if applicable | Existing render tests |
 | Add or rename a **config key** | `CONFIG_SCHEMA` in `src/registry.js` | Auto-propagates to: config validation, `config list` output, `--help` text, preview gallery — no extra files needed | Config-schema unit tests (if any) |
 | Add a **HUD element** | `src/elements.js` (buildElements normalized model) | `src/engine.js` buildParts (add segment + group); `CONFIG_SCHEMA` elements key in `src/registry.js`; README HUD section; maintainer-local design spec §4 data-source table (optional, not in repo) | `test/elements.test.js`; `test/engine.test.js` |
-| Change **render logic** | `src/engine.js` / `src/layout.js` / `src/render.js` | Design spec if visual format changes | `test/render.test.js` |
+| Change **render logic** | `src/engine.js` / `src/layout.js` / `src/render.js` | If the default/style output changes, run `node scripts/sync-readme-styles.js` | `test/render.test.js`; `test/readme-mockups.test.js` |
 | **Bump version** | `package.json` `"version"` | `CHANGELOG.md` (move `[Unreleased]` → dated heading, add fresh `[Unreleased]`) | None (manual) |
 | Add a **CHANGELOG entry** | `CHANGELOG.md` `[Unreleased]` section | Nothing else until release | None (manual) |
 

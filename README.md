@@ -143,48 +143,48 @@ S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
 
 ```
 Opus 4.8·1M | claude-status | main
-ctx ▪▪░░░░ 23% 47k · compact 60%
-ses ▪▪▪░░░ 52% 3h12m · wk ▪▪░░░ 31% 4d6h
+ctx ▪▪░░░░░░ 24% 47k | compact 60%
+ses ▪▪▪▪░░░░ 52% 3h12m | wk ▪▪░░░░░░ 31% 4d6h
 ```
 
 ### `classic` (fallback default)
 
 ```
 Opus 4.8·1M | claude-status | ⎇ main
-Ctx ▓▓░░░░░░ 23% · 47k | compact in 60%
-Sess ▓▓▓▓▓░ 52% · 3h12m | Wk ▓▓░░░ 31% · 4d6h
+Ctx ▓▓░░░░░░ 24% 47k | compact in 60%
+Sess ▓▓▓▓░░░░ 52% 3h12m | Wk ▓▓░░░░░░ 31% 4d6h
 ```
 
 ### `tech` (needs Nerd Font)
 
 ```
- Opus 4.8 1M │  claude-status │  main
-󰍛 ███▱▱▱▱ 23% 47k │ ♻ 60%
- █████▱ 52% 3h12m │  ██▱▱▱ 31% 4d6h
+ Opus 4.8·1M |  claude-status |   main
+󰅛 ██▱▱▱▱▱▱ 24% 47k | ♻ 60%
+󰲫 ████▱▱▱▱ 52% 3h12m |  ██▱▱▱▱▱▱ 31% 4d6h
 ```
 
 ### `data`
 
 ```
-Opus-4.8[1M] | claude-status | git:main
-CTX ⣿⣿⣀⠀⠀ 23.4% 47.0k/200k | AC 60.0%
-5H  ⣿⣿⣿⣀⠀ 52.1% ⟳3h12m | 7D ⣿⣀⠀⠀⠀ 31.0% ⟳4d6h
+Opus 4.8·1M | claude-status | git: main
+CTX ⣿⣿⠀⠀⠀⠀⠀⠀ 24% 47.0k/1000k | AC 60%
+5H ⣿⣿⣿⣿⠀⠀⠀⠀ 52% 3h12m | 7D ⣿⣿⠀⠀⠀⠀⠀⠀ 31% 4d6h
 ```
 
 ### `ascii` (most compatible)
 
 ```
-Opus 4.8 1M | claude-status | main
-Ctx [##------] 23% 47k | compact 60%
+Opus 4.8·1M | claude-status | main
+Ctx [##------] 24% 47k | compact 60%
 Ses [####----] 52% 3h12m | Wk [##------] 31% 4d6h
 ```
 
 ### `emoji`
 
 ```
-🤖 Opus 4.8·1M | 📁 claude-status | 🌿 main
-🧠 ▓▓░░░░ 23% 47k | ♻️ 60%
-⏱️ ▓▓▓▓▓░ 52% 3h12m | 📅 ▓░░░░ 31% 4d6h
+🤖 Opus 4.8·1M | 📁 claude-status | 🌿  main
+🧠 ▓▓░░░░░░ 24% 47k | ♻️ 60%
+⏱️ ▓▓▓▓░░░░ 52% 3h12m | 📅 ▓▓░░░░░░ 31% 4d6h
 ```
 
 ---

@@ -48,15 +48,22 @@ Follow these steps in order. Do not skip any step — `npm test` will catch miss
 
    Choose the most restrictive `requires` that your new characters actually need.
 
-3. **Add a one-line mockup to the README "Styles" section.**
+3. **Add the README "Styles" gallery block, then regenerate it from real output.**
 
-   Add a fenced code block mockup matching the existing format. The `test/docdrift.test.js` doc-drift guard checks that every style `name` in the `STYLES` array appears somewhere in `README.md`; the test goes red if the name is absent. The README Styles gallery is the authoritative public catalogue. If you maintain a local design spec, also update its Appendix A — but that file is not tracked in the repo and is optional.
+   First add a `### \`<name>\``  heading with an (empty or rough) fenced code block in the README "Styles" section so the section exists. Then run:
+
+   ```sh
+   node scripts/sync-readme-styles.js
+   ```
+
+   This rewrites every Styles block (and the "The HUD" line) from the ACTUAL `renderHud` output — correct labels, %, bar width, and Nerd/braille/emoji glyphs, with zero hand-transcription. **Never hand-type the fenced block contents.** The README gallery is the authoritative public catalogue; a maintainer-local design spec (not in the repo) is optional.
 
 4. **Run `npm test` and confirm all tests pass.**
 
-   Two test files cover new styles automatically:
-   - `test/render.test.js` — per-style smoke test renders every entry in `registry.STYLES`; a malformed descriptor (wrong shape, missing field) will fail here.
-   - `test/docdrift.test.js` — README doc-drift guard; fails if the style `name` is not present in `README.md`.
+   Three guards cover new styles automatically:
+   - `test/render.test.js` — per-style smoke; a malformed descriptor (wrong shape, missing field) fails here.
+   - `test/docdrift.test.js` — fails if the style `name` is not present in `README.md`.
+   - `test/readme-mockups.test.js` — fails if the README mockup doesn't byte-match `renderHud` output (re-run the sync script to fix).
 
    Fix any failures before proceeding.
 

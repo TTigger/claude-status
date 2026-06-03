@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-06-03
+
+### Added
+
+- **Mockup-drift guard**: `test/readme-mockups.test.js` asserts the README "The HUD" line and all 7 Styles gallery blocks byte-match the actual `renderHud` output, so docs can't silently drift from code (CI goes red if they do).
+- `scripts/sync-readme-styles.js` + `scripts/styleMockup.js`: regenerate those README mockups from real output (handles Nerd/braille/emoji glyphs with zero hand-transcription); run it whenever rendered output changes.
+
+### Fixed
+
+- Aligned all 7 Styles gallery mockups with real output (correct labels, percentages, 8-cell bars, `git: main`, `47.0k/1000k`, actual Nerd-Font glyphs) — they were stale hand-written spec placeholders.
+
 ## [0.4.1] - 2026-06-03
 
 ### Fixed

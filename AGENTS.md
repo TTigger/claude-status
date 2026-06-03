@@ -47,10 +47,10 @@ The installer uses a read–backup–merge–write pattern so that `~/.claude/se
 
 ## Maintenance Map (Closed Loop)
 
-**If you change styles:**
+**If you change styles (or anything affecting rendered output):**
 1. Update the `STYLES` descriptor in `src/registry.js`.
-2. Add a gallery mockup in the `README.md` **Styles** section. This is the authoritative public catalogue — the design spec is a maintainer-local document (not tracked in the repo).
-3. The `test/docdrift.test.js` doc-drift test enforces that every style `name` in `STYLES` appears literally in `README.md` — it will fail until the README is updated.
+2. **Regenerate the README mockups: `node scripts/sync-readme-styles.js`** — it rewrites the "The HUD" line and every Styles gallery block from the ACTUAL renderer output (handles Nerd/braille/emoji glyphs with zero hand-transcription). Never hand-edit those fenced blocks.
+3. Two guards in CI: `test/docdrift.test.js` checks every style `name` appears in `README.md`; `test/readme-mockups.test.js` checks each mockup byte-matches `renderHud` output (run the sync script if it goes red). The design spec is a maintainer-local document (not tracked in the repo).
 
 **If you add a HUD element:**
 1. `src/elements.js` — add normalisation logic for the new data field.
