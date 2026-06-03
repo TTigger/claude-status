@@ -46,11 +46,15 @@ Then open a new Claude Code session. The HUD appears automatically at the top of
 
 ## The HUD
 
+The default style is `claude` with the `auto` layout — a single adaptive line that
+packs onto one row on a wide terminal and only wraps to 2–3 rows when space runs out:
+
 ```
- Opus 4.8·1M | claude-status | main
-Ctx ▰▰▱▱▱▱ 23% 47k | compact 60%
-Sess ▰▰▰▰▰▱ 52% 3h12m | Wk ▰▰▱▱▱ 31% 4d6h
+Opus 4.8·1M | claude-status | ⎇ main | Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60% | S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
 ```
+
+On a narrow terminal the same data wraps (and sheds detail) automatically — see the
+`claude` style and the layout options below.
 
 | Element | What it shows |
 |---|---|
@@ -126,10 +130,13 @@ Seven styles are available. Choose with `claude-status style <name>` (shortcut) 
 
 ### `claude` (default — Claude coral brand)
 
+Default layout is `auto` (single adaptive line). Shown here as `three` (grouped lines)
+to make the parts clear; labels are `Ctx` / `S` / `W` and the bar is 8 cells wide:
+
 ```
-Opus 4.8·1M | claude-status | main
-Ctx ▰▰▱▱▱▱ 23% 47k | compact 60%
-Sess ▰▰▰▰▰▱ 52% 3h12m | Wk ▰▰▱▱▱ 31% 4d6h
+Opus 4.8·1M | claude-status | ⎇ main
+Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60%
+S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
 ```
 
 ### `minimal`

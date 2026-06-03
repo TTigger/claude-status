@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-06-03
+
+### Fixed
+
+- README: the "The HUD" and `claude` style mockups now match the actual default output — `auto` single-line layout, `S`/`W` labels (not `Sess`/`Wk`), `24%`, an 8-cell bar, and the `⎇` branch marker — instead of stale spec placeholders. The default is stated explicitly (`claude` style + `auto` layout).
+
 ## [0.4.0] - 2026-06-03
 
 ### Added
