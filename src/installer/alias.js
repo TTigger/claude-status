@@ -2,9 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 
-function aliasSnippet(shell, name) {
-  if (shell === 'powershell') return `Set-Alias ${name} cc`;
-  return `alias ${name}='cc'`;
+function aliasSnippet(shell, name, target = 'cc') {
+  if (shell === 'powershell') return `Set-Alias ${name} ${target}`;
+  return `alias ${name}='${target}'`;
 }
 
 // resolver() returns a path string if `cc` exists on PATH, else null.
@@ -25,8 +25,8 @@ function detectShell(env, platform) {
   return { shell: 'bash', profilePath: path.posix.join(home, '.bashrc') };
 }
 
-function writeAlias(profilePath, shell, name) {
-  const snippet = aliasSnippet(shell, name);
+function writeAlias(profilePath, shell, name, target = 'cc') {
+  const snippet = aliasSnippet(shell, name, target);
   if (profilePath === null) {
     return { written: false, reason: 'no-profile', snippet, profilePath: null };
   }

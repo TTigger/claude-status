@@ -74,3 +74,46 @@ test('writeAlias with null profilePath returns no-profile for powershell', () =>
   assert.strictEqual(result.snippet, 'Set-Alias clc cc');
   assert.strictEqual(result.profilePath, null);
 });
+
+// --- custom target tests ---
+
+test('aliasSnippet bash default target is cc (back-compat)', () => {
+  assert.strictEqual(aliasSnippet('bash', 'clc'), "alias clc='cc'");
+});
+
+test('aliasSnippet bash with custom target', () => {
+  assert.strictEqual(aliasSnippet('bash', 'qq', 'claude-status'), "alias qq='claude-status'");
+});
+
+test('aliasSnippet powershell with custom target', () => {
+  assert.strictEqual(aliasSnippet('powershell', 'qq', 'claude-status'), 'Set-Alias qq claude-status');
+});
+
+test('writeAlias with custom target writes correct snippet on first call', () => {
+  const tmpFile = path.join(os.tmpdir(), `alias-test-${process.pid}-${performance.now()}.sh`);
+  try {
+    const result = writeAlias(tmpFile, 'bash', 'qq', 'claude-status');
+    assert.strictEqual(result.written, true);
+    assert.strictEqual(result.reason, 'written');
+    const content = fs.readFileSync(tmpFile, 'utf8');
+    assert.ok(content.includes("alias qq='claude-status'"), `File should contain the snippet, got: ${content}`);
+  } finally {
+    if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+  }
+});
+
+test('writeAlias with custom target is idempotent — second call returns exists, snippet appears once', () => {
+  const tmpFile = path.join(os.tmpdir(), `alias-test-${process.pid}-${performance.now()}.sh`);
+  try {
+    writeAlias(tmpFile, 'bash', 'qq', 'claude-status');
+    const result = writeAlias(tmpFile, 'bash', 'qq', 'claude-status');
+    assert.strictEqual(result.written, false);
+    assert.strictEqual(result.reason, 'exists');
+    const content = fs.readFileSync(tmpFile, 'utf8');
+    const snippet = "alias qq='claude-status'";
+    const occurrences = content.split(snippet).length - 1;
+    assert.strictEqual(occurrences, 1, `Snippet should appear exactly once, found ${occurrences} times`);
+  } finally {
+    if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+  }
+});
