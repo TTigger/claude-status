@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-03
+
+### Added
+- Built-in `cs` short command — `cs <args...>` runs the same CLI as `claude-status` (e.g. `cs style claude`). Installed automatically.
+- `claude-status alias <name> --for self` — create a custom short shell alias pointing at the `claude-status` CLI (any name). `alias <name>` without `--for` still aliases the `cc` launcher.
+- Installer now warns when a pre-existing `cs` (e.g. coursier) is found on PATH that the new `cs` may shadow.
+
 ## [0.2.0] - 2026-06-02
 
 ### Added

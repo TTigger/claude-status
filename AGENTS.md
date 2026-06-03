@@ -17,6 +17,8 @@ node --test test/<file>.test.js # run a single test file
 
 **Shortcut commands (0.2.0+):** `claude-status style [<name>]`, `claude-status layout [<name>]`, and `claude-status alias <name>` are top-level shortcuts. `style`/`layout` with no argument show a gallery / available list; with a name they call `config set` internally. `alias <name>` writes a shell alias to `~/.zshrc` / `~/.bashrc` (macOS/Linux, idempotent) or prints a `Set-Alias` line for PowerShell (Windows). `install --alias <name>` also works.
 
+**0.3.0 additions:** The package ships a built-in `cs` bin (same entry point as `claude-status`) so `cs style claude`, `cs help cc`, etc. all work — installed automatically. `alias <name> --for self` creates a custom shell alias pointing at `claude-status` itself (any name); omitting `--for` or using `--for cc` still aliases the `cc` launcher. The installer warns when a pre-existing `cs` (e.g. coursier) is found on PATH.
+
 ## Architecture
 
 | File | Role |

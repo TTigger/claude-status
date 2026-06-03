@@ -28,6 +28,7 @@ npx @ttigger/claude-status install
 - **Single-line adaptive layout** — `auto` layout packs everything onto one line and gracefully wraps to two or three lines only when the terminal is narrow.
 - **Theme-aware colors** — reads `~/.claude/settings.json` and mirrors Claude Code's light/dark/system theme; no manual palette config required.
 - **`cc` launcher** — a tiny `cc` shim that forwards all args to `claude`, saving keystrokes on every invocation.
+- **`cs` short command** — a built-in `cs` bin that runs the same CLI as `claude-status` (e.g. `cs style claude`, `cs help cc`).
 - **Config with live preview** — `claude-status config set` and `claude-status preview` let you tweak and instantly see the result in your actual terminal colors.
 - **Pure Node, cross-OS** — CommonJS, zero runtime dependencies, works on Windows, macOS, and Linux.
 
@@ -138,7 +139,7 @@ Configuration is stored in `~/.claude/claude-status.config.json`. Only the keys 
 | `claude-status config list` | Print all current settings |
 | `claude-status config reset [key]` | Reset one key (or all) to defaults |
 
-> **Tip:** `claude-status style` and `claude-status layout` are quick shortcuts. `claude-status style claude` is shorthand for `config set style claude`; `claude-status style` with no argument shows a gallery of all styles (● marks the current one). Likewise, `claude-status layout two` switches layout and `claude-status layout` lists available layouts.
+> **Tip:** `claude-status style` and `claude-status layout` are quick shortcuts. `claude-status style claude` is shorthand for `config set style claude`; `claude-status style` with no argument shows a gallery of all styles (● marks the current one). Likewise, `claude-status layout two` switches layout and `claude-status layout` lists available layouts. Even shorter: `cs style claude` — the built-in `cs` bin is an alias for `claude-status`.
 
 ### Dotted keys for nested settings
 
@@ -203,7 +204,8 @@ claude-status preview --style emoji --layout three
 | `claude-status uninstall` | Remove the HUD and restore `~/.claude/settings.json` from backup |
 | `claude-status style [<name>]` | No arg: gallery of all styles (● = current). With name: switch style (shortcut for `config set style <name>`). |
 | `claude-status layout [<name>]` | No arg: show current + available layouts. With name: switch layout (shortcut for `config set layout <name>`). |
-| `claude-status alias <name>` | Add a shell alias (e.g. `clc`) for `cc`; writes to shell RC on macOS/Linux, prints `Set-Alias` line on Windows. |
+| `cs <args...>` | Built-in shorthand for `claude-status <args...>` (e.g. `cs style claude`, `cs help cc`). Installed automatically. |
+| `claude-status alias <name> [--for cc\|self]` | Add a shell alias. `--for cc` (default): alias points at the `cc` launcher. `--for self`: alias points at `claude-status` itself (pick any name, e.g. `qq`). Writes to shell RC on macOS/Linux, prints `Set-Alias` line on Windows. |
 | `claude-status config set <key> <value>` | Set a config value |
 | `claude-status config get <key>` | Get a config value |
 | `claude-status config list` | List all config values |
@@ -246,6 +248,12 @@ npx @ttigger/claude-status install --alias clc
 ```
 
 Either way, `clc` (or whatever name you choose) becomes a shortcut for `cc`, avoiding any conflict with the system compiler.
+
+**`cs` short command for the CLI:** the package also ships a built-in `cs` bin that is a direct alias for `claude-status` (not for `cc`). Use it for CLI commands: `cs style claude`, `cs alias clc`, `cs help cc`, etc.
+
+> **Note:** if you already have a `cs` on PATH (e.g. Scala's `coursier` tool), the installer warns you that the new `cs` may shadow it. In that case you can create your own short name instead: `claude-status alias qq --for self` writes a shell alias called `qq` pointing at `claude-status` itself (any name works). Use `--for cc` (or omit `--for`) to alias the `cc` launcher as usual.
+
+**Custom alias for the CLI itself:** `claude-status alias <name> --for self` lets you pick any name for the `claude-status` CLI. On macOS/Linux it writes to `~/.zshrc` / `~/.bashrc`; on Windows it prints the `Set-Alias` line for your `$PROFILE`.
 
 ---
 

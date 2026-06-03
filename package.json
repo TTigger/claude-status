@@ -1,6 +1,6 @@
 {
   "name": "@ttigger/claude-status",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A portable Claude Code statusline HUD (usage, model, git, context) with 7 styles, a cc launcher, and a config CLI with live preview.",
   "license": "MIT",
   "engines": { "node": ">=18" },
