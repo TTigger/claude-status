@@ -64,6 +64,62 @@ Sess ▰▰▰▰▰▱ 52% 3h12m | Wk ▰▰▱▱▱ 31% 4d6h
 
 ---
 
+## Cost estimate (API-key mode) & usage limits
+
+In **API-key / free usage** the HUD can show a **session cost estimate** in place of the Session/Weekly bars:
+
+```
+$0.0123 est · 47k ctx
+```
+
+The `$` value is `cost.total_cost_usd` from Claude Code's statusline data, in USD. The `· 47k ctx` part is the **current context-window occupancy** (tokens currently in context) — not cumulative session tokens.
+
+### This is an estimate
+
+The dollar figure is a **client-side estimate of the current session**, computed locally from token counts. It is **not a bill, not an account balance, and may differ from the real charge on the Anthropic Console.** The `est` marker is always shown precisely to signal this — treat the number as a rough running estimate, not an invoice.
+
+### When it appears
+
+The cost estimate appears **only when Claude Code provides no `rate_limits`**:
+
+- **API-key / free usage** — there are no subscription rate limits, so the estimate is shown.
+- A **subscriber's very first render**, before they send their first message.
+
+Once a subscriber sends a message and `rate_limits` appear, the cost element **automatically disappears** and the normal Session (5 h) / Weekly (7 d) bars return. **Subscribers stay clean** — no dollar figures during normal subscription use.
+
+### `LIMIT` at 100%
+
+When a Session or Weekly meter reaches **100% usage**, it switches from a bar to a red `LIMIT` marker that still shows the reset countdown:
+
+```
+S LIMIT 3h12m
+```
+
+This just makes "you've hit the cap" obvious.
+
+### What it can't show
+
+The HUD **cannot** display, because Claude Code does **not** expose this data to statusline scripts:
+
+- Usage-credit balance / remaining credit
+- Monthly spend limit
+- Current account balance
+- Auto-reload status
+
+None of that billing data is available to statusline scripts, so it is not (and cannot be) shown — including by the `LIMIT` marker.
+
+### Hiding the cost estimate
+
+The cost element is controlled by `elements.cost` (default `true`). To hide it:
+
+```sh
+claude-status config set elements.cost false
+```
+
+With it off, the old `— waiting for first message` note returns in no-`rate_limits` situations.
+
+---
+
 ## Styles
 
 Seven styles are available. Choose with `claude-status style <name>` (shortcut) or `claude-status config set style <name>`.
@@ -145,6 +201,7 @@ Configuration is stored in `~/.claude/claude-status.config.json`. Only the keys 
 
 ```sh
 claude-status config set elements.weekly false       # hide weekly usage
+claude-status config set elements.cost false         # hide the API-key cost estimate
 claude-status config set colorThresholds.green 40    # green up to 40 %
 claude-status config set colorThresholds.yellow 70   # yellow 40–70 %, red above
 claude-status config set autoCompact.thresholdPct 80 # approximate compaction threshold
@@ -171,7 +228,8 @@ claude-status config set layout two                  # two-line layout
     "context": true,
     "autoCompact": true,
     "session": true,
-    "weekly": true
+    "weekly": true,
+    "cost": true
   },
   "autoCompact": {
     "thresholdPct": 83.5

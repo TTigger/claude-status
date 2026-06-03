@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-03
+
+### Added
+- Session cost **estimate** element (`elements.cost`, default on): shows `$0.0123 est · 47k ctx` — a client-side estimate of the current session, in USD — only when Claude Code provides no rate_limits (API-key / free usage, or a subscriber's first render). Subscribers stay clean: once rate_limits appear, the cost element hides and Session/Weekly bars return. The `est` marker and docs make clear this is an estimate, not a bill or balance.
+- `LIMIT` marker: a Session/Weekly meter at 100% shows a red `LIMIT` with its reset countdown instead of a full bar.
+
+### Changed
+- In no-rate_limits situations, the cost estimate replaces the old "waiting for first message" note (which still appears when `elements.cost` is off).
+
+### Notes
+- Usage-credit balance, monthly spend limit, current account balance, and auto-reload status are NOT exposed to statusline scripts by Claude Code, so the HUD cannot and does not display them.
+
 ## [0.3.0] - 2026-06-03
 
 ### Added

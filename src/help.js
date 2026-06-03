@@ -15,7 +15,7 @@ Usage:
   claude-status config list
   claude-status config reset [<key>]
   claude-status preview [--style <name>] [--layout <name>]
-  claude-status help [styles|layout|colors|cc|troubleshooting]
+  claude-status help [styles|layout|colors|cost|cc|troubleshooting]
 
 Styles: ${STYLES.map(s => s.name).join(', ')}
 Layouts: ${LAYOUTS.map(l => l.name).join(', ')}
@@ -27,6 +27,7 @@ function topicHelp(topic) {
     case 'styles': return _stylesHelp();
     case 'layout': return _layoutHelp();
     case 'colors': return _colorsHelp();
+    case 'cost':   return _costHelp();
     case 'cc':     return _ccHelp();
     case 'troubleshooting': return _troubleshootingHelp();
     default: return HELP;
@@ -102,6 +103,42 @@ Adjust thresholds:
 
 If colours look flat or wrong, your terminal may lack truecolor/256-colour
 support. Try: claude-status config set style classic`;
+}
+
+function _costHelp() {
+  return `Cost — Session cost ESTIMATE (API-key / no-rate_limits mode)
+
+In API-key / free usage the HUD shows a session cost estimate instead of the
+Session/Weekly bars:
+
+  $0.0123 est · 47k ctx
+
+This is an ESTIMATE. The dollar figure is a client-side estimate of the
+current session (from \`cost.total_cost_usd\`), computed locally from token
+counts. It is NOT a bill and NOT an account balance, and may differ from the
+real charge on the Anthropic Console. The \`est\` marker is always shown to
+signal this.
+
+When it appears:
+  - API-key / free usage (Claude Code provides no rate_limits), or
+  - a subscriber's very first render, before their first message.
+  Once rate_limits appear (a subscriber sends a message) the cost element
+  hides and the Session/Weekly bars return — subscribers stay clean.
+
+  \`· 47k ctx\` is the current context-window occupancy (tokens currently in
+  context), NOT cumulative session tokens.
+
+LIMIT at 100%:
+  When a Session or Weekly meter hits 100%, it shows a red \`LIMIT\` marker
+  with its reset countdown (e.g. \`S LIMIT 3h12m\`) instead of a bar.
+
+What it can't show:
+  Usage-credit balance, monthly spend limit, current account balance, and
+  auto-reload status are NOT exposed to statusline scripts by Claude Code,
+  so the HUD cannot and does not display them.
+
+Hide the cost estimate (restores the "waiting for first message" note):
+  claude-status config set elements.cost false`;
 }
 
 function _ccHelp() {

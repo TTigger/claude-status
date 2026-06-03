@@ -16,6 +16,7 @@
 - **Spawns** the local `claude` process when you invoke the `cc` launcher.
 - **Sends nothing over the network.** There are no analytics, telemetry, update checks, or external requests of any kind.
 - Session and weekly usage data is delivered to the renderer via Claude Code's stdin hook mechanism and is only rendered to the terminal. It is never stored to disk or transmitted anywhere.
+- The session cost figure is a **local client-side estimate** derived solely from the statusline data (`cost.total_cost_usd`) supplied on stdin; no billing or account data is read or transmitted, and the tool cannot access the Anthropic Console balance, spend limits, or any other account information.
 
 ## Reporting a Vulnerability
 

@@ -43,6 +43,8 @@ The render pipeline is pure and data-driven: `elements.js → engine.js → layo
 
 The installer uses a read–backup–merge–write pattern so that `~/.claude/settings.json` is never overwritten without a `.bak` recovery path.
 
+**Cost element (0.4.0):** the `cost` element renders a session cost **estimate** (`$0.0123 est · 47k ctx`) sourced from `cost.total_cost_usd` in the statusline data — a client-side estimate of the current session, not a bill or balance. It is shown only when `els.cost.isApiKey` is true (i.e. Claude Code provides no `rate_limits` — API-key/free usage, or a subscriber's first render); once `rate_limits` appear it disappears and the Session/Weekly bars return. The `· ctx` value is current context-window occupancy, not cumulative session tokens. Separately, a Session/Weekly meter at 100% usage renders a red `LIMIT` marker (with its reset countdown) instead of a bar. Claude Code does not expose Usage-credit balance, spend limits, account balance, or auto-reload status to statusline scripts, so the HUD cannot display them.
+
 ## Maintenance Map (Closed Loop)
 
 **If you change styles:**
