@@ -1,0 +1,9 @@
+# Enforce LF line endings in the working tree for all text files, so that a
+# checkout on Windows (where git's core.autocrlf=true would otherwise rewrite
+# files to CRLF) does not break byte-exact tests such as the README mockup
+# guard (test/readme-mockups.test.js), which compares README content against
+# LF render output. CI runs on Linux (LF); this keeps local Windows runs green too.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending normalized.
+*.png binary

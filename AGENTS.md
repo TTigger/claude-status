@@ -79,3 +79,4 @@ See `.claude/skills/sync-docs` for the skill that checks all four files stay con
 - **Testing:** `node --test` (Node's built-in test runner). All tests live in `test/`. New code must be accompanied by tests.
 - **Commits:** conventional commits (`feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `chore:`).
 - **Purity:** engine and layout functions are pure — no I/O, no side effects. Side-effectful code (fs, git, installer) is isolated in dedicated modules.
+- **Line endings:** LF only, enforced by `.gitattributes` (`* text=auto eol=lf`). This matters on Windows (`core.autocrlf=true`): without it, a checkout rewrites files to CRLF and breaks the byte-exact README mockup guard (`test/readme-mockups.test.js`). Don't commit CRLF; PNGs under `media/` are marked `binary`.
