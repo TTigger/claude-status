@@ -11,7 +11,7 @@ function readStdin() { try { return fs.readFileSync(0, 'utf8'); } catch { return
 function main() {
   const arg = process.argv[2] || 'stop';
   let stdin = {};
-  try { stdin = JSON.parse(readStdin()) || {}; } catch { stdin = {}; }
+  try { stdin = JSON.parse(readStdin().replace(/^﻿/, '')) || {}; } catch { stdin = {}; }
   const claudeDir = path.join(os.homedir(), '.claude');
   const config = loadConfig(path.join(claudeDir, 'claude-status.config.json'));
   const statePath = path.join(claudeDir, 'claude-status-ping.state.json');
