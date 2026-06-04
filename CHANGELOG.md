@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-04
+
+### Added
+
+- **`ping` — session completion notifications.** A zero-dependency, Claude Code hook-driven desktop notifier: it fires when a turn finishes (only for turns ≥ `ping.minSeconds`, default 30s) or when a session is blocked waiting for input, and names the project so you know which session to return to. macOS `osascript`, Linux `notify-send`, Windows tiered toast (BurntToast if present → tray balloon → bell). On by default but quiet; disable with `cs config set ping.enabled false` or install with `--no-ping`. New keys: `ping.enabled`, `ping.minSeconds`, `ping.onWaiting`, `ping.waitingCooldownSec`, `ping.sound`. Nothing is sent over the network.
+
 ## [0.4.2] - 2026-06-03
 
 ### Added

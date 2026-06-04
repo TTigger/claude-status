@@ -19,6 +19,8 @@ This is the canonical closed-loop maintenance map for `@ttigger/claude-status`. 
 | Change **render logic** | `src/engine.js` / `src/layout.js` / `src/render.js` | If the default/style output changes, run `node scripts/sync-readme-styles.js` | `test/render.test.js`; `test/readme-mockups.test.js` |
 | **Bump version** | `package.json` `"version"` | `CHANGELOG.md` (move `[Unreleased]` → dated heading, add fresh `[Unreleased]`) | None (manual) |
 | Add a **CHANGELOG entry** | `CHANGELOG.md` `[Unreleased]` section | Nothing else until release | None (manual) |
+| Change **ping** notify logic | `src/ping/{trigger,notify,message,state,run}.js` | README ping table if a config key changes; `AGENTS.md` ping rows | `test/ping-*.test.js` |
+| Change **ping hook injection** | `src/installer/settings.js` (`mergeHooks`/`stripHooks`) + `src/installer/install.js` | README `--no-ping` note | `test/settings.test.js`, `test/install.test.js` |
 
 ## Key Relationships
 

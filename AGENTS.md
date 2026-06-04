@@ -31,6 +31,11 @@ node --test test/<file>.test.js # run a single test file
 | `src/palette.js` | Theme-aware colour resolver; reads `~/.claude/settings.json` theme field. |
 | `src/config.js` | Deep-merge config read/write against `CONFIG_SCHEMA`. |
 | `src/installer/` | Merges the render hook into `~/.claude/settings.json` with a `.bak` backup before writing. |
+| `src/ping/trigger.js` | Pure notify policy: `decide(...)` decides whether a hook event should notify. |
+| `src/ping/notify.js` | Pure per-platform `notifyCommand(platform, opts)` + `hasGui(env, platform)`. |
+| `src/ping/message.js` | Pure `buildMessage(...)` — project name (cwd basename) + duration text. |
+| `src/ping/state.js` | Per-session `startTs`/`lastWaitingTs` store (`~/.claude/claude-status-ping.state.json`). |
+| `src/ping/run.js` | `runPing(...)` orchestrator; all effects (spawn/now/paths) injected so the bin is testable. |
 | `src/preview.js` | Renders all layout variants for a given style in a side-by-side preview. |
 | `src/git.js` | Reads current git branch via a local `git` subprocess. |
 | `src/detect.js` | Terminal capability detection (truecolor / unicode / braille / nerd / emoji / ascii). |
@@ -58,6 +63,12 @@ The installer uses a read–backup–merge–write pattern so that `~/.claude/se
 3. `src/registry.js` `CONFIG_SCHEMA` — add an `'elements.<name>'` dotted key (`{ type: 'bool', default: true }`) so it is configurable.
 4. Update the maintainer-local design spec §4 element catalogue, if present (the spec is not tracked in the repo).
 5. Add tests covering the new element in `test/elements.test.js` and `test/engine.test.js`.
+
+**If you change `ping` (the notifier):**
+1. Pure logic lives in `src/ping/{trigger,notify,message}.js`; effects in `state.js` + `run.js`.
+2. The three hooks (`UserPromptSubmit`/`Stop`/`Notification`) are injected by `mergeHooks` in `src/installer/settings.js` and gated by `ping.enabled` in `runInstall`.
+3. Config keys live in `CONFIG_SCHEMA` (`ping.*`). Update the README ping table if you add one.
+4. Tests: `test/ping-*.test.js`. Notifications are never really spawned — `run.js` takes an injected `spawn`.
 
 See `.claude/skills/sync-docs` for the skill that checks all four files stay consistent after element changes.
 

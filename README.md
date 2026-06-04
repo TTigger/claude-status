@@ -189,6 +189,32 @@ Ses [####----] 52% 3h12m | Wk [##------] 31% 4d6h
 
 ---
 
+## `ping` — session completion notifications
+
+`ping` fires a **desktop notification** when a Claude Code turn finishes or when a session is blocked
+waiting for your input — naming the **project** so you know which session to return to. Useful when you
+run several sessions at once. It is **on by default but quiet**: a finished-turn ping only fires for
+turns longer than 30 seconds.
+
+- **macOS** uses `osascript`, **Linux** uses `notify-send`, **Windows** shows a toast via BurntToast
+  (if you already have it) or a tray balloon, falling back to a terminal bell. Zero dependencies — it
+  never installs anything.
+- Nothing is sent over the network; everything is local.
+
+Configure with `cs config set <key> <value>`:
+
+| Key | Default | Meaning |
+|---|---|---|
+| `ping.enabled` | `true` | master switch (turn it off: `cs config set ping.enabled false`) |
+| `ping.minSeconds` | `30` | only ping for turns at least this long |
+| `ping.onWaiting` | `true` | ping when Claude is blocked waiting for input/permission |
+| `ping.waitingCooldownSec` | `60` | debounce repeated waiting pings |
+| `ping.sound` | `false` | play the OS notification sound |
+
+Skip wiring it at install time with `npx @ttigger/claude-status install --no-ping`.
+
+---
+
 ## Configuration
 
 Configuration is stored in `~/.claude/claude-status.config.json`. Only the keys you change are written — it is a **deep merge**, so you never need to specify the full config.

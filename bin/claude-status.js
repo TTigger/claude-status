@@ -33,6 +33,7 @@ function cmdInstall(flags) {
     style: typeof flags.style === 'string' ? flags.style : null,
     refreshInterval: 30,
     dryRun: !!flags['dry-run'],
+    noPing: !!flags['no-ping'],
     globalInstall: () => {
       try { execSync('npm install -g @ttigger/claude-status', { stdio: 'ignore' }); } catch {}
     },
@@ -49,6 +50,9 @@ function cmdInstall(flags) {
     console.log(`[dry-run] would update ${summary.settingsPath} (with .bak) and write ${summary.configPath}`);
   } else {
     console.log(`✓ installed. style=${summary.chosenStyle} (recommended ${summary.recommendedStyle})`);
+    if (summary.pingInstalled) {
+      console.log('ping is on — desktop notification on turns longer than 30s. Disable: cs config set ping.enabled false');
+    }
   }
   if (summary.ccCollision) console.log('⚠ "cc" already exists on PATH (C compiler?). Consider: claude-status install --alias clc');
   if (summary.csCollision) console.log('⚠ "cs" already exists on PATH (coursier?). Our cs may shadow it; use a custom alias instead: claude-status alias <name> --for self');
