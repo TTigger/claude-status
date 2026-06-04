@@ -1,6 +1,6 @@
 <h1 align="center">@ttigger/claude-status</h1>
 
-<p align="center">A portable Claude Code statusline HUD — model, project, git, context, and real usage limits, right in your terminal.</p>
+<p align="center">A portable Claude Code statusline HUD — model, project, git, context, and real usage limits in your terminal, plus desktop pings when a session finishes.</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@ttigger/claude-status"><img src="https://img.shields.io/npm/v/@ttigger/claude-status" alt="npm version"></a>
@@ -23,6 +23,7 @@ npx @ttigger/claude-status install
 ## Why
 
 - **Usage limits in the CLI** — brings the claude.ai Session (5 h rolling) and Weekly (7 d) usage meters and their reset countdowns into every Claude Code session; no browser tab required.
+- **`ping` desktop notifications** — juggling several sessions? Get a desktop notification the moment a turn finishes (only for turns over 30 s) or a session is blocked waiting for you — naming the project so you know which one to return to. On by default, quiet, zero-dependency. [Details below.](#ping--session-completion-notifications)
 - **One command, nothing to clone** — `npx @ttigger/claude-status install` fetches and wires everything; works on any machine with Node ≥ 18.
 - **7 styles including Claude brand** — coral `claude` default, `minimal`, `classic`, `tech` (Nerd Font), `data` (braille), `ascii` (most compatible), `emoji`.
 - **Single-line adaptive layout** — `auto` layout packs everything onto one line and gracefully wraps to two or three lines only when the terminal is narrow.
