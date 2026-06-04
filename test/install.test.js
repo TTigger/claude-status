@@ -78,3 +78,36 @@ test('csCollision is false when resolveCs returns null', () => {
   });
   assert.strictEqual(summary.csCollision, false);
 });
+
+test('install injects ping hooks by default and reports pingInstalled', () => {
+  const home = tmpHome();
+  const summary = runInstall({
+    home, env: { COLORTERM: 'truecolor', WT_SESSION: '1' }, platform: 'linux',
+    style: null, refreshInterval: 30, globalInstall: () => {}, resolveCc: () => null,
+  });
+  assert.strictEqual(summary.pingInstalled, true);
+  const settings = JSON.parse(fs.readFileSync(path.join(home, '.claude', 'settings.json'), 'utf8'));
+  assert.strictEqual(settings.hooks.Stop[0].hooks[0].command, 'claude-status-ping stop');
+});
+
+test('--no-ping skips hook injection', () => {
+  const home = tmpHome();
+  const summary = runInstall({
+    home, env: {}, platform: 'linux', style: null, refreshInterval: 30,
+    globalInstall: () => {}, resolveCc: () => null, noPing: true,
+  });
+  assert.strictEqual(summary.pingInstalled, false);
+  const settings = JSON.parse(fs.readFileSync(path.join(home, '.claude', 'settings.json'), 'utf8'));
+  assert.ok(!settings.hooks);
+});
+
+test('dry run does not write ping hooks', () => {
+  const home = path.join(os.tmpdir(), 'cs-dryping-' + process.pid + '-' + Math.floor(performance.now()));
+  fs.mkdirSync(home, { recursive: true });
+  const summary = runInstall({
+    home, env: {}, platform: 'linux', style: null, refreshInterval: 30,
+    globalInstall: () => {}, resolveCc: () => null, dryRun: true,
+  });
+  assert.strictEqual(summary.pingInstalled, true); // intent reported
+  assert.ok(!fs.existsSync(path.join(home, '.claude')), 'dry run writes nothing');
+});
