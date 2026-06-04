@@ -54,6 +54,11 @@ const CONFIG_SCHEMA = {
   'elements.weekly': { type: 'bool', default: true },
   'elements.cost': { type: 'bool', default: true },
   'autoCompact.thresholdPct': { type: 'number', min: 0, max: 100, default: 83.5 },
+  'ping.enabled': { type: 'bool', default: true },
+  'ping.minSeconds': { type: 'int', min: 0, max: 3600, default: 30 },
+  'ping.onWaiting': { type: 'bool', default: true },
+  'ping.waitingCooldownSec': { type: 'int', min: 0, max: 3600, default: 60 },
+  'ping.sound': { type: 'bool', default: false },
   refreshIntervalSec: { type: 'int', min: 1, max: 3600, default: 30 },
 };
 
