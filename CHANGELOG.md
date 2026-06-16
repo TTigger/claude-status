@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-06-16
+
+### Fixed
+
+- `neon` no longer needs a Nerd Font to look right: its powerline segment caps now fall back to standard Unicode half-circles `◖`/`◗` (and only to flat coloured blocks when the terminal has no Unicode at all). The README demo and gallery now show this default look instead of Nerd-Font-only glyphs.
+- `ping` on Windows now uses a native WinRT toast (`Windows.UI.Notifications`) as its no-BurntToast fallback — a real, reliable desktop notification with zero install — before degrading to the old tray balloon and terminal bell. It uses the always-registered PowerShell AppUserModelID so the toast shows on every machine.
+- Notification text keeps apostrophes (they were being stripped), and `neon` falls back to the default `|` separator on a no-colour terminal (segments were running together with no gap).
+
 ## [0.6.0] - 2026-06-16
 
 ### Changed
