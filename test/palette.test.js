@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const { resolvePalette, colorize } = require('../src/palette');
+const P = require('../src/palette');
 
 const caps256 = { color256: true, truecolor: false };
 const caps8 = { color256: false, truecolor: false };
@@ -30,4 +31,20 @@ test('coral mode uses coral gradient regardless of theme', () => {
 test('colorize wraps text with tier color + reset', () => {
   const p = resolvePalette('traffic', 'dark', caps256);
   assert.strictEqual(colorize('x', 'low', p), '\x1b[38;5;40mx\x1b[0m');
+});
+
+test('fgCode emits truecolor when caps.truecolor', () => {
+  assert.strictEqual(P.fgCode('#d97757', { truecolor: true }), '\x1b[38;2;217;119;87m');
+});
+test('fgCode emits 256 when only color256', () => {
+  assert.strictEqual(P.fgCode('#ffffff', { color256: true }), '\x1b[38;5;231m');
+});
+test('fgCode emits empty string when no color caps', () => {
+  assert.strictEqual(P.fgCode('#d97757', {}), '');
+});
+test('bgCode emits truecolor background', () => {
+  assert.strictEqual(P.bgCode('#7aa2f7', { truecolor: true }), '\x1b[48;2;122;162;247m');
+});
+test('bgCode emits empty string when no color caps', () => {
+  assert.strictEqual(P.bgCode('#7aa2f7', {}), '');
 });

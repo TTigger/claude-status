@@ -33,4 +33,31 @@ function colorize(text, tierName, palette) {
   return palette[tierName] + text + palette.reset;
 }
 
-module.exports = { resolvePalette, colorize };
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+// 標準 xterm-256：6x6x6 cube (16-231) + grayscale ramp (232-255)
+function rgbTo256(r, g, b) {
+  const toCube = (v) => v < 48 ? 0 : v < 115 ? 1 : Math.round((v - 35) / 40);
+  if (r === g && g === b) {
+    if (r < 8) return 16;
+    if (r > 248) return 231;
+    return Math.round(((r - 8) / 247) * 24) + 232;
+  }
+  return 16 + 36 * toCube(r) + 6 * toCube(g) + toCube(b);
+}
+function fgCode(hex, caps) {
+  const [r, g, b] = hexToRgb(hex);
+  if (caps && caps.truecolor) return `\x1b[38;2;${r};${g};${b}m`;
+  if (caps && caps.color256) return `\x1b[38;5;${rgbTo256(r, g, b)}m`;
+  return '';
+}
+function bgCode(hex, caps) {
+  const [r, g, b] = hexToRgb(hex);
+  if (caps && caps.truecolor) return `\x1b[48;2;${r};${g};${b}m`;
+  if (caps && caps.color256) return `\x1b[48;5;${rgbTo256(r, g, b)}m`;
+  return '';
+}
+
+module.exports = { resolvePalette, colorize, fgCode, bgCode, hexToRgb, rgbTo256 };
