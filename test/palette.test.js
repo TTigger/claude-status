@@ -30,7 +30,7 @@ test('coral mode uses coral gradient regardless of theme', () => {
 
 test('colorize wraps text with tier color + reset', () => {
   const p = resolvePalette('traffic', 'dark', caps256);
-  assert.strictEqual(colorize('x', 'low', p), '\x1b[38;5;40mx\x1b[0m');
+  assert.strictEqual(colorize('x', 'low', p), '\x1b[38;5;40mx\x1b[39m');
 });
 
 test('fgCode emits truecolor when caps.truecolor', () => {
@@ -57,4 +57,9 @@ test('fgCode emits 256 code 196 for saturated red', () => {
 });
 test('bgCode emits 256 code 196 for saturated red', () => {
   assert.strictEqual(P.bgCode('#ff0000', { color256: true }), '\x1b[48;5;196m');
+});
+
+test('colorize resets foreground only (\\x1b[39m), not full reset', () => {
+  const pal = { high: '\x1b[38;5;196m', fgReset: '\x1b[39m', reset: '\x1b[0m' };
+  assert.strictEqual(P.colorize('X', 'high', pal), '\x1b[38;5;196mX\x1b[39m');
 });

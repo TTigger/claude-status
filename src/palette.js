@@ -26,11 +26,11 @@ function resolvePalette(mode, theme, caps) {
     const set = C8[mode];
     low = code8(set.low); mid = code8(set.mid); high = code8(set.high);
   }
-  return { low, mid, high, dim: '\x1b[2m', reset: '\x1b[0m' };
+  return { low, mid, high, dim: '\x1b[2m', reset: '\x1b[0m', fgReset: '\x1b[39m' };
 }
 
 function colorize(text, tierName, palette) {
-  return palette[tierName] + text + palette.reset;
+  return palette[tierName] + text + palette.fgReset;
 }
 
 function hexToRgb(hex) {
