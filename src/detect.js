@@ -9,9 +9,8 @@ function capabilities(env, platform) {
 
 function recommendStyle(caps) {
   if (!caps.unicode) return 'ascii';
-  if (caps.nerd) return 'tech';
-  if (caps.truecolor || caps.color256) return 'claude';
-  return 'classic';
+  if (caps.nerd) return 'neon';
+  return 'claude';
 }
 
 module.exports = { capabilities, recommendStyle };

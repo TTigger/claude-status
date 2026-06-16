@@ -14,9 +14,15 @@ test('legacy windows console (no WT_SESSION) => no unicode', () => {
   assert.strictEqual(c.unicode, false);
 });
 
-test('recommendStyle: full caps => claude, no unicode => ascii, nerd => tech', () => {
-  assert.strictEqual(recommendStyle({ unicode: true, color256: true, truecolor: true, nerd: false }), 'claude');
-  assert.strictEqual(recommendStyle({ unicode: false, color256: false, truecolor: false, nerd: false }), 'ascii');
-  assert.strictEqual(recommendStyle({ unicode: true, color256: false, truecolor: false, nerd: true }), 'tech');
-  assert.strictEqual(recommendStyle({ unicode: true, color256: false, truecolor: false, nerd: false }), 'classic');
+test('recommendStyle: no unicode -> ascii', () => {
+  assert.strictEqual(recommendStyle({ unicode: false }), 'ascii');
+});
+test('recommendStyle: nerd -> neon', () => {
+  assert.strictEqual(recommendStyle({ unicode: true, nerd: true }), 'neon');
+});
+test('recommendStyle: color but no nerd -> claude', () => {
+  assert.strictEqual(recommendStyle({ unicode: true, truecolor: true }), 'claude');
+});
+test('recommendStyle: plain unicode -> claude', () => {
+  assert.strictEqual(recommendStyle({ unicode: true }), 'claude');
 });
