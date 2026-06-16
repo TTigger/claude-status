@@ -99,4 +99,46 @@ function colorizePct(pct, thresholds, palette) {
   return colorize(`${pct}%`, tier(pct, thresholds), palette);
 }
 
-module.exports = { renderMetric, buildParts };
+const PL_LEFT = '';   // Nerd Font left half-circle
+const PL_RIGHT = '';  // Nerd Font right half-circle
+
+function segKeyFor(part, assign) {
+  return assign['_' + part.group];
+}
+
+function decorate(parts, style, palette, caps) {
+  const dec = style.decoration || { type: 'none' };
+  const RESET = palette.reset;
+  const hasDeco = palette.deco && Object.keys(palette.deco).length > 0;
+
+  if (dec.type === 'none') {
+    return { parts: parts.map(p => ({ ...p, text: p.text + RESET })) };
+  }
+
+  if (dec.type === 'pill') {
+    const out = parts.map(p => {
+      const roleKey = dec.assign[p.key];
+      const pair = hasDeco && roleKey ? palette.deco[roleKey] : null;
+      const text = pair ? `${pair.bg}${pair.fg} ${p.text} ${RESET}` : p.text + RESET;
+      return { ...p, text };
+    });
+    return { parts: out };
+  }
+
+  // segment
+  const nerd = !!(caps && caps.nerd);
+  const out = parts.map(p => {
+    const roleKey = dec.byGroup ? segKeyFor(p, dec.assign) : dec.assign[p.key];
+    const pair = hasDeco && roleKey ? palette.deco[roleKey] : null;
+    if (!pair) return { ...p, text: p.text + RESET };
+    if (nerd) {
+      const segFg = pair.bg.replace('[48;', '[38;');
+      const text = `${segFg}${PL_LEFT}${pair.bg}${pair.fg} ${p.text} \x1b[49m${segFg}${PL_RIGHT}${RESET}`;
+      return { ...p, text };
+    }
+    return { ...p, text: `${pair.bg}${pair.fg} ${p.text} ${RESET}` };
+  });
+  return { parts: out, sep: nerd ? '' : ' ' };
+}
+
+module.exports = { renderMetric, buildParts, decorate };

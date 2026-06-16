@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { renderMetric } = require('../src/engine');
+const { renderMetric, decorate } = require('../src/engine');
 const { resolvePalette } = require('../src/palette');
 const { stripAnsi } = require('../src/format');
 const { styleByName } = require('../src/registry');
@@ -127,4 +127,42 @@ test('session at 100% renders LIMIT instead of a bar', () => {
   const s = parts.find(p => p.key === 'session');
   assert.match(stripAnsi(s.text), /^Ses LIMIT /);
   assert.doesNotMatch(stripAnsi(s.text), /\[#*-*\]/); // no bar
+});
+
+function mkPal() {
+  return { reset:'\x1b[0m', fgReset:'\x1b[39m', text:'', dim:'',
+    deco: { sage:{bg:'\x1b[48;5;22m',fg:'\x1b[38;5;114m'},
+            blue:{bg:'\x1b[48;5;111m',fg:'\x1b[38;5;234m'} } };
+}
+test('decorate none returns parts unchanged in text, terminated with reset', () => {
+  const parts = [{ key:'model', text:'Opus', group:'env' }];
+  const out = decorate(parts, { decoration:{type:'none'} }, mkPal(), { truecolor:true });
+  assert.strictEqual(out.parts[0].text, 'Opus\x1b[0m');
+  assert.strictEqual(out.sep, undefined);
+});
+test('decorate pill wraps assigned key with bg+fg pad+reset', () => {
+  const style = { decoration:{ type:'pill', assign:{ context:'sage' } } };
+  const parts = [{ key:'context', text:'Ctx 24%', group:'context' }];
+  const out = decorate(parts, style, mkPal(), { color256:true });
+  assert.strictEqual(out.parts[0].text, '\x1b[48;5;22m\x1b[38;5;114m Ctx 24% \x1b[0m');
+});
+test('decorate pill without color caps (empty deco) leaves text plain', () => {
+  const style = { decoration:{ type:'pill', assign:{ context:'sage' } } };
+  const pal = { reset:'\x1b[0m', fgReset:'\x1b[39m', deco:{} };
+  const out = decorate([{ key:'context', text:'Ctx', group:'context' }], style, pal, {});
+  assert.strictEqual(out.parts[0].text, 'Ctx\x1b[0m');
+});
+test('decorate segment with nerd adds powerline lozenge caps and empty sep', () => {
+  const style = { decoration:{ type:'segment', byGroup:true, assign:{ _env:'blue' } } };
+  const parts = [{ key:'model', text:'Opus', group:'env' }];
+  const out = decorate(parts, style, mkPal(), { color256:true, nerd:true });
+  assert.strictEqual(out.sep, '');
+  assert.strictEqual(out.parts[0].text,
+    '[38;5;111m[48;5;111m[38;5;234m Opus [49m[38;5;111m[0m');
+});
+test('decorate segment without nerd falls back to rounded bg pill, space sep', () => {
+  const style = { decoration:{ type:'segment', byGroup:true, assign:{ _env:'blue' } } };
+  const out = decorate([{ key:'model', text:'Opus', group:'env' }], style, mkPal(), { color256:true });
+  assert.strictEqual(out.sep, ' ');
+  assert.strictEqual(out.parts[0].text, '\x1b[48;5;111m\x1b[38;5;234m Opus \x1b[0m');
 });
