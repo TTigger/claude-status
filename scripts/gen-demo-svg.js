@@ -1,26 +1,31 @@
 #!/usr/bin/env node
-// Regenerate media/demo.svg from the real renderer output — a stacked showcase
-// of all FOUR styles (claude / mist / neon / ascii), each on a single adaptive
-// line, with demo data that exercises the coral/tier ramp (ctx 47% / 5h 68% /
-// 7d 85%). It parses the ANSI the renderer actually emits — truecolor (38;2 /
-// 48;2), 256-colour (38;5 / 48;5), and fg/bg resets — and draws background
-// "deco" runs (mist pills, neon segments) as rounded rects behind the glyphs.
+// Regenerate the demo media from the REAL renderer output.
 //
-// Layout strategy: a FIXED character grid. Every run is positioned at
-// col*CW and stretched to exactly its cell count via textLength +
-// lengthAdjust, so glyphs line up with their background rects regardless of
-// which monospace font the viewer has. neon is rendered WITHOUT a Nerd Font
-// (its rounded-block fallback) so the demo needs no special font to look right.
+// Produces:
+//   media/demo.svg          — stacked showcase of all 4 styles (the hero image)
+//   media/style-<name>.svg  — one single-line preview per style (README gallery)
 //
-// Usage: node scripts/gen-demo-svg.js
+// It parses the ANSI the renderer actually emits — truecolor (38;2 / 48;2),
+// 256-colour (38;5 / 48;5), fg/bg resets — and draws background "deco" runs
+// (mist pills, neon segments) as rounded rects. neon is rendered WITH a Nerd
+// Font so its powerline half-circle end-caps (U+E0B6 / U+E0B4) are present in
+// the stream; those cap glyphs are drawn as SVG half-ellipses (in the segment
+// colour) so the PNG needs no Nerd Font to look right.
 //
-// NOTE: npm's README renderer blocks SVG, so the README embeds the rasterized
-// media/demo.png. Regenerate the PNG from the SVG with a headless browser
-// screenshot (see scripts/shoot-demo.js / the release flow).
+// Layout: a FIXED character grid. Every run sits at col*CW and is stretched to
+// exactly its cell count via textLength + lengthAdjust, so glyphs line up with
+// their background rects regardless of the viewer's monospace font.
+//
+// Usage:   node scripts/gen-demo-svg.js
+// Rasterise to PNG (npm blocks SVG in READMEs): open each .svg in a headless
+// browser at 2x and screenshot the <img> element to the matching .png.
 const fs = require('node:fs');
 const path = require('node:path');
 const { renderHud } = require('../src/render');
 const { DEFAULT_CONFIG } = require('../src/defaults');
+
+const PL_LEFT = '';  // powerline left half-circle (Nerd Font)
+const PL_RIGHT = ''; // powerline right half-circle (Nerd Font)
 
 const NOW = 0;
 const stdin = {
@@ -37,12 +42,11 @@ const stdin = {
   },
 };
 
-// neon is shown WITHOUT nerd so its powerline caps degrade to clean rounded
-// blocks (no Nerd Font needed to view the PNG). The others use truecolor.
+// neon uses nerd:true so the powerline caps are emitted (drawn as SVG shapes).
 const DEMOS = [
   { style: 'claude', caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
   { style: 'mist',   caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
-  { style: 'neon',   caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
+  { style: 'neon',   caps: { unicode: true, color256: true, truecolor: true, nerd: true } },
   { style: 'ascii',  caps: { color256: true } },
 ];
 
@@ -117,10 +121,6 @@ function parseAnsi(line) {
 const xmlEsc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const cols = (s) => [...s].length;
 
-const rows = DEMOS.map((d) => ({ name: d.style, runs: parseAnsi(renderLine(d.style, d.caps)) }));
-const rowCols = (runs) => runs.reduce((a, r) => a + cols(r.text), 0);
-const maxCols = Math.max(...rows.map((r) => rowCols(r.runs)));
-
 // --- layout metrics (fixed grid) ---
 const CW = 9;          // cell advance (px)
 const FONT = 15;
@@ -128,51 +128,97 @@ const LINE_H = 34;
 const PAD_X = 22;
 const PAD_TOP = 58;    // room for the title bar
 const PAD_BOTTOM = 20;
-const LABEL_W = 78;    // left gutter for the style name
-const GRID_X = PAD_X + LABEL_W;
-const contentW = maxCols * CW;
-const width = GRID_X + contentW + PAD_X;
-const height = PAD_TOP + (rows.length - 1) * LINE_H + PAD_BOTTOM + 14;
+const LABEL_W = 78;    // left gutter for the style name (hero only)
 
-const dots = [['#ff5f56', 0], ['#ffbd2e', 1], ['#27c93f', 2]]
-  .map(([c, i]) => `<circle cx="${22 + i * 20}" cy="24" r="6" fill="${c}"/>`)
-  .join('');
+function buildSvg(demos, { showLabel }) {
+  const rows = demos.map((d) => ({ name: d.style, runs: parseAnsi(renderLine(d.style, d.caps)) }));
+  const rowCols = (runs) => runs.reduce((a, r) => a + cols(r.text), 0);
+  const maxCols = Math.max(...rows.map((r) => rowCols(r.runs)));
 
-let body = '';
-rows.forEach((row, ri) => {
-  const yTop = PAD_TOP + ri * LINE_H - 22;
-  const yBase = PAD_TOP + ri * LINE_H;
-  // style-name label in the gutter
-  body += `<text x="${PAD_X}" y="${yBase}" fill="#6b7180" font-style="italic">${xmlEsc(row.name)}</text>`;
-  // background rects first, then glyphs on top
-  let col = 0;
-  let bgSvg = '';
-  let txtSvg = '';
-  for (const run of row.runs) {
-    const n = cols(run.text);
-    const x = GRID_X + col * CW;
-    const w = n * CW;
-    if (run.bg) {
-      bgSvg += `<rect x="${x.toFixed(1)}" y="${(yTop - 1).toFixed(1)}" width="${w.toFixed(1)}" height="${LINE_H - 8}" rx="5" fill="${run.bg}"/>`;
+  const gridX = PAD_X + (showLabel ? LABEL_W : 0);
+  const contentW = maxCols * CW;
+  const width = gridX + contentW + PAD_X;
+  const height = PAD_TOP + (rows.length - 1) * LINE_H + PAD_BOTTOM + 14;
+
+  const dots = [['#ff5f56', 0], ['#ffbd2e', 1], ['#27c93f', 2]]
+    .map(([c, i]) => `<circle cx="${22 + i * 20}" cy="24" r="6" fill="${c}"/>`)
+    .join('');
+
+  let body = '';
+  rows.forEach((row, ri) => {
+    const yTop = PAD_TOP + ri * LINE_H - 22;
+    const yBase = PAD_TOP + ri * LINE_H;
+    const segY = yTop - 1;
+    const segH = LINE_H - 8;
+    if (showLabel) {
+      body += `<text x="${PAD_X}" y="${yBase}" fill="#6b7180" font-style="italic">${xmlEsc(row.name)}</text>`;
     }
-    txtSvg += `<text x="${x.toFixed(1)}" y="${yBase}" xml:space="preserve" textLength="${w.toFixed(1)}" lengthAdjust="spacingAndGlyphs" fill="${run.fg || FG}">${xmlEsc(run.text)}</text>`;
-    col += n;
-  }
-  body += bgSvg + txtSvg;
-});
+    let col = 0;
+    let bgSvg = '';
+    let fgSvg = '';
+    // Coalesce consecutive runs that share a background colour into ONE pill
+    // rect, so per-run foreground changes (e.g. a coloured bar on a coloured
+    // segment) don't leave rounded notches inside a single segment.
+    let curBg = null; // { color, startCol, cols }
+    const flushBg = () => {
+      if (!curBg) return;
+      const bx = gridX + curBg.startCol * CW;
+      const bw = curBg.cols * CW;
+      bgSvg += `<rect x="${bx.toFixed(1)}" y="${segY.toFixed(1)}" width="${bw.toFixed(1)}" height="${segH}" rx="4" fill="${curBg.color}"/>`;
+      curBg = null;
+    };
+    for (const run of row.runs) {
+      const n = cols(run.text);
+      const x = gridX + col * CW;
+      // powerline cap glyph -> draw a half-ellipse in the segment colour
+      if (run.text === PL_LEFT || run.text === PL_RIGHT) {
+        flushBg();
+        const ry = segH / 2;
+        const cy0 = segY, cy1 = segY + segH;
+        const d = run.text === PL_LEFT
+          ? `M ${(x + CW).toFixed(1)} ${cy0} A ${CW} ${ry.toFixed(1)} 0 0 0 ${(x + CW).toFixed(1)} ${cy1} Z`
+          : `M ${x.toFixed(1)} ${cy0} A ${CW} ${ry.toFixed(1)} 0 0 1 ${x.toFixed(1)} ${cy1} Z`;
+        bgSvg += `<path d="${d}" fill="${run.fg || FG}"/>`;
+        col += n;
+        continue;
+      }
+      if (run.bg) {
+        if (curBg && curBg.color === run.bg) curBg.cols += n;
+        else { flushBg(); curBg = { color: run.bg, startCol: col, cols: n }; }
+      } else {
+        flushBg();
+      }
+      const w = n * CW;
+      fgSvg += `<text x="${x.toFixed(1)}" y="${yBase}" xml:space="preserve" textLength="${w.toFixed(1)}" lengthAdjust="spacingAndGlyphs" fill="${run.fg || FG}">${xmlEsc(run.text)}</text>`;
+      col += n;
+    }
+    flushBg();
+    body += bgSvg + fgSvg;
+  });
 
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="${FONT}" font-weight="500">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="${FONT}" font-weight="500">
   <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="#1b1c1e"/>
   <rect x="0" y="0" width="${width}" height="44" fill="#26282b"/>
   ${dots}
   ${body}
 </svg>
 `;
+}
 
-const outPath = path.join(__dirname, '..', 'media', 'demo.svg');
-fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, svg);
-console.log('wrote', outPath, `(${width}x${height}, ${rows.length} styles, ${maxCols} cols)`);
-for (const r of rows) {
-  console.log(`  ${r.name.padEnd(8)} ${r.runs.map((x) => x.text).join('').replace(/\s+/g, ' ').trim()}`);
+const mediaDir = path.join(__dirname, '..', 'media');
+fs.mkdirSync(mediaDir, { recursive: true });
+
+const heroSvg = buildSvg(DEMOS, { showLabel: true });
+fs.writeFileSync(path.join(mediaDir, 'demo.svg'), heroSvg);
+console.log('wrote media/demo.svg (hero, 4 styles)');
+
+for (const d of DEMOS) {
+  const svg = buildSvg([d], { showLabel: false });
+  fs.writeFileSync(path.join(mediaDir, `style-${d.style}.svg`), svg);
+  console.log(`wrote media/style-${d.style}.svg`);
+}
+
+console.log('--- plain preview ---');
+for (const d of DEMOS) {
+  console.log(d.style.padEnd(8), renderLine(d.style, d.caps).replace(/\x1b\[[0-9;]*m/g, ''));
 }

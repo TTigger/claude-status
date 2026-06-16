@@ -134,6 +134,8 @@ Four styles are available. Choose with `claude-status style <name>` (shortcut) o
 Default layout is `auto` (single adaptive line). Shown here as `three` (grouped lines)
 to make the parts clear; labels are `Ctx` / `S` / `W` and the bar is 8 cells wide:
 
+<img src="https://raw.githubusercontent.com/TTigger/claude-status/main/media/style-claude.png" width="760" alt="claude style — refined Clay design, warm coral accent on a bare terminal">
+
 ```
 Opus 4.8·1M | claude-status | ⎇ main
 Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60%
@@ -143,6 +145,8 @@ S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
 ### `mist`
 
 Soft pastel pills (Catppuccin / Rosé Pine inspired):
+
+<img src="https://raw.githubusercontent.com/TTigger/claude-status/main/media/style-mist.png" width="760" alt="mist style — soft pastel rounded pill backgrounds">
 
 ```
 Opus 4.8·1M |  claude-status  |  ⎇ main 
@@ -154,6 +158,8 @@ Opus 4.8·1M |  claude-status  |  ⎇ main
 
 Powerline segments (Tokyo Night inspired; needs a Nerd Font):
 
+<img src="https://raw.githubusercontent.com/TTigger/claude-status/main/media/style-neon.png" width="760" alt="neon style — Tokyo Night powerline segment blocks with rounded caps">
+
 ```
  Opus 4.8·1M  claude-status  ⎇ main 
  Ctx ▰▰▱▱▱▱▱▱ 24% 47k  compact 60% 
@@ -161,6 +167,8 @@ Powerline segments (Tokyo Night inspired; needs a Nerd Font):
 ```
 
 ### `ascii` (most compatible)
+
+<img src="https://raw.githubusercontent.com/TTigger/claude-status/main/media/style-ascii.png" width="760" alt="ascii style — plain text bars with traffic-light colours, no backgrounds">
 
 ```
 Opus 4.8·1M | claude-status | main
