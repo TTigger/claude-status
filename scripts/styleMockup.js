@@ -9,13 +9,15 @@ const { STYLES } = require('../src/registry');
 const strip = (s) => s.replace(/\x1b\[[0-9;]*m/g, '');
 
 // The canonical "gallery" rendering for a style: three-layout, wide terminal,
-// fixed fixture + now, all caps on (so glyphs are not downgraded). ANSI stripped.
+// fixed fixture + now. Colour caps on, but nerd:false so neon shows its DEFAULT
+// Unicode half-circle caps (◖/◗) — what users without a Nerd Font actually see.
+// ANSI stripped.
 function styleMockup(styleName) {
   const out = renderHud({
     stdin: SAMPLE,
     config: { ...DEFAULT_CONFIG, style: styleName, layout: 'three' },
     theme: 'dark',
-    caps: { unicode: true, color256: true, truecolor: true, nerd: true },
+    caps: { unicode: true, color256: true, truecolor: true, nerd: false },
     columns: 200,
     now: SAMPLE_NOW,
     branch: 'main',
@@ -30,7 +32,7 @@ function defaultMockup() {
     stdin: SAMPLE,
     config: DEFAULT_CONFIG,
     theme: 'dark',
-    caps: { unicode: true, color256: true, truecolor: true, nerd: true },
+    caps: { unicode: true, color256: true, truecolor: true, nerd: false },
     columns: 200,
     now: SAMPLE_NOW,
     branch: 'main',

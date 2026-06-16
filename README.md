@@ -156,14 +156,14 @@ Opus 4.8·1M |  claude-status  |  ⎇ main
 
 ### `neon`
 
-Powerline segments (Tokyo Night inspired; needs a Nerd Font):
+Powerline segments (Tokyo Night inspired). Rounded `◖◗` caps work in any Unicode terminal — no Nerd Font required; install one (and set `CLAUDE_STATUS_NERD=1`) for sharper powerline glyphs:
 
 <img src="https://raw.githubusercontent.com/TTigger/claude-status/main/media/style-neon.png" width="760" alt="neon style — Tokyo Night powerline segment blocks with rounded caps">
 
 ```
- Opus 4.8·1M  claude-status  ⎇ main 
- Ctx ▰▰▱▱▱▱▱▱ 24% 47k  compact 60% 
- S ▰▰▰▰▱▱▱▱ 52% 3h12m  W ▰▰▱▱▱▱▱▱ 31% 4d6h 
+◖ Opus 4.8·1M ◗◖ claude-status ◗◖ ⎇ main ◗
+◖ Ctx ▰▰▱▱▱▱▱▱ 24% 47k ◗◖ compact 60% ◗
+◖ S ▰▰▰▰▱▱▱▱ 52% 3h12m ◗◖ W ▰▰▱▱▱▱▱▱ 31% 4d6h ◗
 ```
 
 ### `ascii` (most compatible)

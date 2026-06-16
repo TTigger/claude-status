@@ -46,7 +46,7 @@ const stdin = {
 const DEMOS = [
   { style: 'claude', caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
   { style: 'mist',   caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
-  { style: 'neon',   caps: { unicode: true, color256: true, truecolor: true, nerd: true } },
+  { style: 'neon',   caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
   { style: 'ascii',  caps: { color256: true } },
 ];
 
@@ -120,6 +120,11 @@ function parseAnsi(line) {
 
 const xmlEsc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const cols = (s) => [...s].length;
+// Standard-Unicode half-circle caps (the default neon look, no Nerd Font).
+const UNI_LEFT = '◖';
+const UNI_RIGHT = '◗';
+const isLeftCap = (s) => s === PL_LEFT || s === UNI_LEFT;
+const isRightCap = (s) => s === PL_RIGHT || s === UNI_RIGHT;
 
 // --- layout metrics (fixed grid) ---
 const CW = 9;          // cell advance (px)
@@ -171,11 +176,11 @@ function buildSvg(demos, { showLabel }) {
       const n = cols(run.text);
       const x = gridX + col * CW;
       // powerline cap glyph -> draw a half-ellipse in the segment colour
-      if (run.text === PL_LEFT || run.text === PL_RIGHT) {
+      if (isLeftCap(run.text) || isRightCap(run.text)) {
         flushBg();
         const ry = segH / 2;
         const cy0 = segY, cy1 = segY + segH;
-        const d = run.text === PL_LEFT
+        const d = isLeftCap(run.text)
           ? `M ${(x + CW).toFixed(1)} ${cy0} A ${CW} ${ry.toFixed(1)} 0 0 0 ${(x + CW).toFixed(1)} ${cy1} Z`
           : `M ${x.toFixed(1)} ${cy0} A ${CW} ${ry.toFixed(1)} 0 0 1 ${x.toFixed(1)} ${cy1} Z`;
         bgSvg += `<path d="${d}" fill="${run.fg || FG}"/>`;
