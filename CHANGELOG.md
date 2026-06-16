@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Consolidated the 7 styles into 4 curated themes — `claude` (refined "Clay" design), `mist` (soft pastel pills), `neon` (powerline segments), `ascii` (compatibility, unchanged). The removed names (`minimal`, `classic`, `tech`, `data`, `emoji`) now alias to the nearest new theme via `STYLE_ALIASES`, so existing configs keep working without changes.
+
+### Added
+
+- Truecolor (24-bit) foreground + background rendering with automatic truecolor→256→8-color degradation (`src/palette.js` `resolveStylePalette`). Per-theme background decoration: rounded pill backgrounds (`mist`) and powerline segments (`neon`), with a no-Nerd-Font rounded-block fallback for `neon`.
+
 ## [0.5.1] - 2026-06-04
 
 ### Changed

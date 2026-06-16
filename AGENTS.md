@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-`@ttigger/claude-status` is a portable Claude Code statusline HUD. It merges a `statusLine` entry into `~/.claude/settings.json` (`{ "type": "command", "command": "claude-status-render" }`) that Claude Code runs to render the status line on every message, displaying model name, project folder, git branch, context usage bar, auto-compact estimate, and Session/Weekly usage limits with reset countdowns. The package ships three bins (`claude-status`, `claude-status-render`, `cc`), seven visual styles, four layouts, a config CLI, and a live preview command. It has zero runtime dependencies and targets Node ≥ 18 CommonJS.
+`@ttigger/claude-status` is a portable Claude Code statusline HUD. It merges a `statusLine` entry into `~/.claude/settings.json` (`{ "type": "command", "command": "claude-status-render" }`) that Claude Code runs to render the status line on every message, displaying model name, project folder, git branch, context usage bar, auto-compact estimate, and Session/Weekly usage limits with reset countdowns. The package ships three bins (`claude-status`, `claude-status-render`, `cc`), four visual styles, four layouts, a config CLI, and a live preview command. It has zero runtime dependencies and targets Node ≥ 18 CommonJS.
 
 ## Commands
 
@@ -23,12 +23,12 @@ node --test test/<file>.test.js # run a single test file
 
 | File | Role |
 |---|---|
-| `src/registry.js` | **Single source of truth.** `STYLES` array (descriptors), `LAYOUTS`, `CONFIG_SCHEMA`. All other modules read from here. |
+| `src/registry.js` | **Single source of truth.** `STYLES` array (descriptors), `LAYOUTS`, `CONFIG_SCHEMA`. All other modules read from here. Each style descriptor carries a `palette` (per-theme `dark`/`light` role colors as truecolor hex) and a `decoration` type (`none` / `pill` / `segment`). `STYLE_ALIASES` maps removed names (`minimal`, `classic`, `tech`, `data`, `emoji`) to the nearest new theme so existing configs keep working. |
 | `src/elements.js` | Normalises raw stdin usage data into a typed model object consumed by the engine. |
-| `src/engine.js` | `buildParts({ els, style, palette, config, now, opts })` — pure function; returns ordered `{ key, text, group }` segments grouped by band (`env` / `context` / `limits`). |
+| `src/engine.js` | `buildParts({ els, style, palette, config, now, opts })` — pure function; returns ordered `{ key, text, group }` segments grouped by band (`env` / `context` / `limits`). `decorate(parts, style, palette, caps)` applies pill or segment backgrounds based on the style's `decoration` type. |
 | `src/layout.js` | Distributes parts across one, two, or three lines according to the chosen layout and terminal width. |
 | `src/render.js` | Top-level `renderHud` — orchestrates elements → engine → layout → ANSI colour. |
-| `src/palette.js` | Theme-aware colour resolver; reads `~/.claude/settings.json` theme field. |
+| `src/palette.js` | `resolveStylePalette(style, theme, caps)` — resolves a style's `palette` role colors to ANSI escape sequences with truecolor→256→8-color degradation. Also builds per-role `deco` entries (bg + fg) used by pill/segment backgrounds. |
 | `src/config.js` | Deep-merge config read/write against `CONFIG_SCHEMA`. |
 | `src/installer/` | Merges the render hook into `~/.claude/settings.json` with a `.bak` backup before writing. |
 | `src/ping/trigger.js` | Pure notify policy: `decide(...)` decides whether a hook event should notify. |
