@@ -31,7 +31,7 @@ test('config list shows style choices', () => {
   const out = run(['config', 'list']).replace(/\x1b\[[0-9;]*m/g, '');
   assert.ok(out.includes('style'));
   assert.ok(out.includes('claude'));
-  assert.ok(out.includes('tech'));
+  assert.ok(out.includes('neon'));
 });
 
 test('config set rejects invalid style with exit 1', () => {
@@ -45,7 +45,7 @@ test('style with no args lists style names', () => {
   const out = run(['style']).replace(/\x1b\[[0-9;]*m/g, '');
   assert.ok(out.includes('claude'));
   assert.ok(out.includes('ascii'));
-  assert.ok(out.includes('emoji'));
+  assert.ok(out.includes('mist'));
 });
 
 test('style ascii sets style and previews', () => {

@@ -1,34 +1,61 @@
 const STYLES = [
-  { name: 'claude', label: 'Claude 簡潔風', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+  { name: 'claude', label: 'Clay 質感簡潔', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
-    icons: null, colorMode: 'coral', decimals: false, rawTokens: false, lowercase: false,
-    requires: 'truecolor' },
-  { name: 'minimal', label: 'Minimal 簡潔', bar: { full: '▪', empty: '░' }, barWrap: ['', ''],
-    labels: { branch: '', ctx: 'ctx', sess: 'ses', wk: 'wk', ac: 'compact' },
-    icons: null, colorMode: 'traffic', decimals: false, rawTokens: false, lowercase: true,
-    requires: 'unicode' },
-  { name: 'classic', label: 'Classic 區塊', bar: { full: '▓', empty: '░' }, barWrap: ['', ''],
-    labels: { branch: '⎇', ctx: 'Ctx', sess: 'Sess', wk: 'Wk', ac: 'compact in' },
-    icons: null, colorMode: 'traffic', decimals: false, rawTokens: false, lowercase: false,
-    requires: 'unicode' },
-  { name: 'tech', label: 'Tech 科技感', bar: { full: '█', empty: '▱' }, barWrap: ['', ''],
-    // Nerd Font glyphs as ES6 code-point escapes — plane-15 icons need \u{...}, not \uXXXX.
-    labels: { branch: '\u{E0A0}', ctx: '\u{F015B}', sess: '\u{F0CAB}', wk: '\u{F073}', ac: '\u{267B}' },
-    icons: { model: '\u{F2DB}', project: '\u{F07B}' }, colorMode: 'traffic', decimals: false,
-    rawTokens: false, lowercase: false, requires: 'nerd' },
-  { name: 'data', label: 'Data 數據控', bar: { full: '⣿', empty: '⠀' }, barWrap: ['', ''],
-    labels: { branch: 'git:', ctx: 'CTX', sess: '5H', wk: '7D', ac: 'AC' },
-    icons: null, colorMode: 'traffic', decimals: true, rawTokens: true, lowercase: false,
-    requires: 'braille' },
+    icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'truecolor',
+    colorMode: 'coral', // TEMP: remove when render switches to resolveStylePalette (later task)
+    decoration: { type: 'none' },
+    palette: {
+      dark:  { text:'#cfc6ba', dim:'#5d6370', accent:'#d97757', accent2:'#e8a07e',
+               low:'#d97757', mid:'#e8a07e', high:'#e0533d' },
+      light: { text:'#4a4640', dim:'#9a9080', accent:'#bf5a3c', accent2:'#c8714e',
+               low:'#bf5a3c', mid:'#c8714e', high:'#a83a22' },
+    } },
+  { name: 'mist', label: 'Mist 柔和粉彩', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+    labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
+    icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'color256',
+    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
+    decoration: { type: 'pill', assign: { project:'foam', branch:'lavender', context:'sage',
+                  session:'gold', weekly:'rose', cost:'rose' } },
+    palette: {
+      dark:  { text:'#e0def4', dim:'#5d6370', accent:'#c4a7e7', accent2:'#9ccfd8',
+               low:'#a6e3a1', mid:'#f6c177', high:'#eb6f92',
+               deco: { foam:{bg:'#1f3038',fg:'#9ccfd8'}, lavender:{bg:'#2b2640',fg:'#c4a7e7'},
+                       sage:{bg:'#23332b',fg:'#a6e3a1'}, gold:{bg:'#3a3220',fg:'#f6c177'},
+                       rose:{bg:'#3a2630',fg:'#ebbcba'} } },
+      light: { text:'#4a4640', dim:'#9a9080', accent:'#7c5bb0', accent2:'#3a7d8c',
+               low:'#4a8055', mid:'#9a7b1e', high:'#b05772',
+               deco: { foam:{bg:'#d7e7ec',fg:'#3a7d8c'}, lavender:{bg:'#e7e0f5',fg:'#7c5bb0'},
+                       sage:{bg:'#dceadd',fg:'#4a8055'}, gold:{bg:'#f0e6cf',fg:'#9a7b1e'},
+                       rose:{bg:'#f3dde3',fg:'#b05772'} } },
+    } },
+  { name: 'neon', label: 'Neon Deck 儀表板', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+    labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
+    icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'nerd',
+    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
+    decoration: { type: 'segment', assign: { _env:'blue', _context:'purple', _limits:'green' },
+                  byGroup: true },
+    palette: {
+      dark:  { text:'#16161e', dim:'#5d6370', accent:'#7aa2f7', accent2:'#7dcfff',
+               low:'#9ece6a', mid:'#e0af68', high:'#f7768e',
+               deco: { blue:{bg:'#7aa2f7',fg:'#16161e'}, cyan:{bg:'#7dcfff',fg:'#16161e'},
+                       purple:{bg:'#bb9af7',fg:'#16161e'}, green:{bg:'#9ece6a',fg:'#16161e'},
+                       red:{bg:'#f7768e',fg:'#16161e'} } },
+      light: { text:'#16161e', dim:'#9a9080', accent:'#3760bf', accent2:'#0f4b6e',
+               low:'#587539', mid:'#8c6c3e', high:'#b15c70',
+               deco: { blue:{bg:'#7aa2f7',fg:'#16161e'}, cyan:{bg:'#7dcfff',fg:'#16161e'},
+                       purple:{bg:'#bb9af7',fg:'#16161e'}, green:{bg:'#9ece6a',fg:'#16161e'},
+                       red:{bg:'#f7768e',fg:'#16161e'} } },
+    } },
   { name: 'ascii', label: 'ASCII 相容', bar: { full: '#', empty: '-' }, barWrap: ['[', ']'],
     labels: { branch: '', ctx: 'Ctx', sess: 'Ses', wk: 'Wk', ac: 'compact' },
-    icons: null, colorMode: 'traffic', decimals: false, rawTokens: false, lowercase: false,
-    requires: 'ascii' },
-  { name: 'emoji', label: 'Emoji 活潑', bar: { full: '▓', empty: '░' }, barWrap: ['', ''],
-    labels: { branch: '🌿', ctx: '🧠', sess: '⏱️', wk: '📅', ac: '♻️' },
-    icons: { model: '🤖', project: '📁' }, colorMode: 'traffic', decimals: false,
-    rawTokens: false, lowercase: false, requires: 'emoji' },
+    icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'ascii',
+    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
+    decoration: { type: 'none' }, palette: null },
 ];
+
+const STYLE_ALIASES = {
+  classic: 'claude', minimal: 'claude', tech: 'neon', data: 'neon', emoji: 'mist',
+};
 
 const LAYOUTS = [
   { name: 'auto', label: '單行自適應' },
@@ -62,6 +89,9 @@ const CONFIG_SCHEMA = {
   refreshIntervalSec: { type: 'int', min: 1, max: 3600, default: 30 },
 };
 
-function styleByName(name) { return STYLES.find(s => s.name === name) || null; }
+function styleByName(name) {
+  const resolved = STYLE_ALIASES[name] || name;
+  return STYLES.find(s => s.name === resolved) || null;
+}
 
-module.exports = { STYLES, LAYOUTS, CONFIG_SCHEMA, styleByName };
+module.exports = { STYLES, LAYOUTS, CONFIG_SCHEMA, styleByName, STYLE_ALIASES };

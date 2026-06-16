@@ -1,13 +1,25 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { STYLES, LAYOUTS, CONFIG_SCHEMA } = require('../src/registry');
+const { STYLES, LAYOUTS, CONFIG_SCHEMA, styleByName, STYLE_ALIASES } = require('../src/registry');
 
-test('exactly 7 styles, claude first/default', () => {
-  assert.strictEqual(STYLES.length, 7);
-  assert.deepStrictEqual(STYLES.map(s => s.name).sort(),
-    ['ascii', 'classic', 'claude', 'data', 'emoji', 'minimal', 'tech'].sort());
-  const claude = STYLES.find(s => s.name === 'claude');
-  assert.strictEqual(claude.colorMode, 'coral');
+test('exactly 4 styles ship', () => {
+  assert.deepStrictEqual(STYLES.map(s => s.name).sort(), ['ascii', 'claude', 'mist', 'neon']);
+});
+test('every non-ascii style has palette dark+light and a decoration type', () => {
+  for (const s of STYLES.filter(s => s.name !== 'ascii')) {
+    assert.ok(s.palette.dark && s.palette.light, `${s.name} needs dark+light`);
+    assert.ok(['none', 'pill', 'segment'].includes(s.decoration.type), `${s.name} decoration`);
+  }
+});
+test('deprecated style names alias to nearest new theme', () => {
+  assert.strictEqual(styleByName('classic').name, 'claude');
+  assert.strictEqual(styleByName('minimal').name, 'claude');
+  assert.strictEqual(styleByName('tech').name, 'neon');
+  assert.strictEqual(styleByName('data').name, 'neon');
+  assert.strictEqual(styleByName('emoji').name, 'mist');
+});
+test('unknown style returns null', () => {
+  assert.strictEqual(styleByName('nope'), null);
 });
 
 test('4 layouts including auto', () => {
@@ -15,7 +27,7 @@ test('4 layouts including auto', () => {
     ['auto', 'oneline', 'three', 'two'].sort());
 });
 
-test('CONFIG_SCHEMA enumerates fixed-choice keys', () => {
+test('CONFIG_SCHEMA style choices match 4 styles', () => {
   assert.deepStrictEqual(CONFIG_SCHEMA.style.choices.sort(),
     STYLES.map(s => s.name).sort());
   assert.deepStrictEqual(CONFIG_SCHEMA.layout.choices.sort(),

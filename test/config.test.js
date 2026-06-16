@@ -30,7 +30,7 @@ test('loadConfig deep-merges file over defaults', () => {
 const { coerceValue } = require('../src/config');
 
 test('coerceValue validates choice keys', () => {
-  assert.deepStrictEqual(coerceValue('style', 'tech'), { ok: true, value: 'tech' });
+  assert.deepStrictEqual(coerceValue('style', 'neon'), { ok: true, value: 'neon' });
   const bad = coerceValue('style', 'nope');
   assert.strictEqual(bad.ok, false);
   assert.ok(bad.error.includes('claude')); // lists valid choices
@@ -57,12 +57,12 @@ test('getDotted reads nested', () => {
 test('setConfig writes coerced value to file (deep)', () => {
   const p = path.join(os.tmpdir(), 'setcfg-' + process.pid + '.json');
   try { fs.unlinkSync(p); } catch {}
-  let r = setConfig(p, 'style', 'tech');
+  let r = setConfig(p, 'style', 'neon');
   assert.strictEqual(r.ok, true);
   r = setConfig(p, 'elements.weekly', 'false');
   assert.strictEqual(r.ok, true);
   const saved = JSON.parse(fs.readFileSync(p, 'utf8'));
-  assert.strictEqual(saved.style, 'tech');
+  assert.strictEqual(saved.style, 'neon');
   assert.strictEqual(saved.elements.weekly, false);
   // invalid value rejected, file unchanged
   const bad = setConfig(p, 'style', 'nope');
