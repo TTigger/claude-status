@@ -2,8 +2,8 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { notifyCommand, hasGui, sanitize } = require('../src/ping/notify');
 
-test('sanitize strips quotes and newlines and caps length', () => {
-  assert.strictEqual(sanitize('a"b\'c`d\ne'), 'abcd e');
+test('sanitize strips double-quotes, backticks, and newlines; caps length', () => {
+  assert.strictEqual(sanitize('a"b\'c`d\ne'), "ab'cd e");
   assert.strictEqual(sanitize('x'.repeat(500)).length, 200);
 });
 
@@ -40,4 +40,16 @@ test('hasGui: mac/win always true; linux needs a display', () => {
   assert.strictEqual(hasGui({}, 'linux'), false);
   assert.strictEqual(hasGui({ DISPLAY: ':0' }, 'linux'), true);
   assert.strictEqual(hasGui({ WAYLAND_DISPLAY: 'wayland-0' }, 'linux'), true);
+});
+
+test('sanitize keeps apostrophes but strips double-quotes and backticks', () => {
+  // input: don't "q" `b`
+  // chars: d,o,n,',t,SP,",q,",SP,`,b,`
+  // after removing " and ` (but NOT '): d,o,n,',t,SP,q,SP,b = "don't q b"
+  assert.strictEqual(sanitize("don't \"q\" `b`"), "don't q b");
+});
+
+test('win32 script uses registered PowerShell AUMID not claude-status', () => {
+  const script = notifyCommand('win32', { title: 't', message: 'm' }).args.slice(-1)[0];
+  assert.match(script, /CreateToastNotifier\('\{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7\}/);
 });

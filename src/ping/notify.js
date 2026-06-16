@@ -1,5 +1,5 @@
 function sanitize(s, max = 200) {
-  return String(s == null ? '' : s).replace(/[\r\n]+/g, ' ').replace(/["'`]/g, '').slice(0, max);
+  return String(s == null ? '' : s).replace(/[\r\n]+/g, ' ').replace(/["`]/g, '').slice(0, max);
 }
 
 function hasGui(env, platform) {
@@ -26,7 +26,7 @@ function windowsScript(title, message) {
         `$x=New-Object Windows.Data.Xml.Dom.XmlDocument;`,
         `$x.LoadXml('<toast><visual><binding template="ToastGeneric"><text>'+$te+'</text><text>'+$me+'</text></binding></visual></toast>');`,
         `$tn=New-Object Windows.UI.Notifications.ToastNotification $x;`,
-        `[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('claude-status').Show($tn)`,
+        `[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe').Show($tn)`,
       `}catch{`,
         `try{`,
           `Add-Type -AssemblyName System.Windows.Forms;`,
