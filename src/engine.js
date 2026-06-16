@@ -148,7 +148,7 @@ function decorate(parts, style, palette, caps) {
     }
     return { ...p, text: `${pair.bg}${pair.fg} ${p.text} ${RESET}` };
   });
-  return { parts: out, sep: useCaps ? '' : ' ' };
+  return { parts: out, sep: !hasDeco ? undefined : ((nerd || uni) ? '' : ' ') };
 }
 
 module.exports = { renderMetric, buildParts, decorate };

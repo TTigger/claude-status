@@ -193,3 +193,21 @@ test('decorate pill leaves plain-flagged parts undecorated', () => {
   const out = decorate(parts, style, mkPal(), { color256:true });
   assert.strictEqual(out.parts[0].text, 'P\x1b[0m');
 });
+
+test('decorate segment with empty deco (no colour) returns undefined sep so default separator is used', () => {
+  const style = { decoration:{ type:'segment', byGroup:true, assign:{ _env:'blue' } } };
+  const pal = { reset:'\x1b[0m', fgReset:'\x1b[39m', deco:{} };
+  const out = decorate([{ key:'m', text:'A', group:'env' }, { key:'p', text:'B', group:'env' }], style, pal, { unicode:true });
+  assert.strictEqual(out.sep, undefined);
+  assert.strictEqual(out.parts[0].text, 'A\x1b[0m');
+  assert.strictEqual(out.parts[1].text, 'B\x1b[0m');
+});
+
+test('neon with unicode but no colour renders with the default separator (not glued together)', () => {
+  const { renderHud } = require('../src/render');
+  const { SAMPLE, SAMPLE_NOW } = require('../src/fixtures');
+  const { DEFAULT_CONFIG } = require('../src/defaults');
+  const out = renderHud({ stdin: SAMPLE, config: { ...DEFAULT_CONFIG, style:'neon', layout:'oneline' },
+    theme:'dark', caps:{ unicode:true }, columns:200, now:SAMPLE_NOW, branch:'main' });
+  assert.ok(out.includes(' | '), 'expected default " | " separators, got: ' + JSON.stringify(out));
+});
