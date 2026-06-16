@@ -38,7 +38,7 @@ node --test test/<file>.test.js # run a single test file
 | `src/ping/run.js` | `runPing(...)` orchestrator; all effects (spawn/now/paths) injected so the bin is testable. |
 | `src/preview.js` | Renders all layout variants for a given style in a side-by-side preview. |
 | `src/git.js` | Reads current git branch via a local `git` subprocess. |
-| `src/detect.js` | Terminal capability detection (truecolor / unicode / braille / nerd / emoji / ascii). |
+| `src/detect.js` | Terminal capability detection (truecolor / color256 / unicode / nerd). |
 | `src/format.js` | Number and duration formatting primitives. |
 | `src/defaults.js` | Default config values derived from `CONFIG_SCHEMA`. |
 | `src/fixtures.js` | Shared fixture data used across tests. |
@@ -54,7 +54,7 @@ The installer uses a read–backup–merge–write pattern so that `~/.claude/se
 
 **If you change styles (or anything affecting rendered output):**
 1. Update the `STYLES` descriptor in `src/registry.js`.
-2. **Regenerate the README mockups: `node scripts/sync-readme-styles.js`** — it rewrites the "The HUD" line and every Styles gallery block from the ACTUAL renderer output (handles Nerd/braille/emoji glyphs with zero hand-transcription). Never hand-edit those fenced blocks.
+2. **Regenerate the README mockups: `node scripts/sync-readme-styles.js`** — it rewrites the "The HUD" line and every Styles gallery block from the ACTUAL renderer output (handles Nerd-Font/Unicode glyphs with zero hand-transcription). Never hand-edit those fenced blocks.
 3. Two guards in CI: `test/docdrift.test.js` checks every style `name` appears in `README.md`; `test/readme-mockups.test.js` checks each mockup byte-matches `renderHud` output (run the sync script if it goes red). The design spec is a maintainer-local document (not tracked in the repo).
 
 **If you add a HUD element:**

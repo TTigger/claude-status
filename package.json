@@ -1,7 +1,7 @@
 {
   "name": "@ttigger/claude-status",
   "version": "0.5.1",
-  "description": "A portable Claude Code statusline HUD (usage, model, git, context) with 7 styles, desktop ping notifications, a cc launcher, and a config CLI with live preview.",
+  "description": "A portable Claude Code statusline HUD (usage, model, git, context) with 4 styles, desktop ping notifications, a cc launcher, and a config CLI with live preview.",
   "license": "MIT",
   "engines": { "node": ">=18" },
   "bin": {
