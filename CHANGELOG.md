@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-06-16
+
 ### Changed
 
 - Consolidated the 7 styles into 4 curated themes — `claude` (refined "Clay" design), `mist` (soft pastel pills), `neon` (powerline segments), `ascii` (compatibility, unchanged). The removed names (`minimal`, `classic`, `tech`, `data`, `emoji`) now alias to the nearest new theme via `STYLE_ALIASES`, so existing configs keep working without changes.

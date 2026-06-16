@@ -1,9 +1,11 @@
 {
   "name": "@ttigger/claude-status",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A portable Claude Code statusline HUD (usage, model, git, context) with 4 styles, desktop ping notifications, a cc launcher, and a config CLI with live preview.",
   "license": "MIT",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "bin": {
     "claude-status": "bin/claude-status.js",
     "claude-status-render": "bin/claude-status-render.js",
@@ -11,9 +13,26 @@
     "cs": "bin/claude-status.js",
     "claude-status-ping": "bin/claude-status-ping.js"
   },
-  "files": ["bin/", "src/", "README.md", "LICENSE"],
-  "scripts": { "test": "node --test" },
-  "keywords": ["claude", "claude-code", "statusline", "cli", "usage", "hud"],
-  "repository": { "type": "git", "url": "git+https://github.com/TTigger/claude-status.git" },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "cli",
+    "usage",
+    "hud"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TTigger/claude-status.git"
+  },
   "homepage": "https://github.com/TTigger/claude-status#readme"
 }
