@@ -101,6 +101,8 @@ function colorizePct(pct, thresholds, palette) {
 
 const PL_LEFT = '';   // Nerd Font left half-circle
 const PL_RIGHT = '';  // Nerd Font right half-circle
+const UNI_LEFT = '◖';  // u+25D6 standard-Unicode left half-circle (no Nerd Font needed)
+const UNI_RIGHT = '◗'; // u+25D7
 
 function segKeyFor(part, assign) {
   return assign['_' + part.group];
@@ -130,19 +132,23 @@ function decorate(parts, style, palette, caps) {
   // segment
   const assign = dec.assign || {};
   const nerd = !!(caps && caps.nerd);
+  const uni = !!(caps && caps.unicode);
+  const useCaps = nerd || uni;
+  const capL = nerd ? PL_LEFT : UNI_LEFT;
+  const capR = nerd ? PL_RIGHT : UNI_RIGHT;
   const out = parts.map(p => {
     if (p.plain) return { ...p, text: p.text + RESET };
     const roleKey = dec.byGroup ? segKeyFor(p, assign) : assign[p.key];
     const pair = hasDeco && roleKey ? palette.deco[roleKey] : null;
     if (!pair) return { ...p, text: p.text + RESET };
-    if (nerd) {
+    if (useCaps) {
       const segFg = pair.bg.replace('[48;', '[38;');
-      const text = `${segFg}${PL_LEFT}${pair.bg}${pair.fg} ${p.text} \x1b[49m${segFg}${PL_RIGHT}${RESET}`;
+      const text = `${segFg}${capL}${pair.bg}${pair.fg} ${p.text} \x1b[49m${segFg}${capR}${RESET}`;
       return { ...p, text };
     }
     return { ...p, text: `${pair.bg}${pair.fg} ${p.text} ${RESET}` };
   });
-  return { parts: out, sep: nerd ? '' : ' ' };
+  return { parts: out, sep: useCaps ? '' : ' ' };
 }
 
 module.exports = { renderMetric, buildParts, decorate };

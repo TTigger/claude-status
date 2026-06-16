@@ -167,6 +167,15 @@ test('decorate segment without nerd falls back to rounded bg pill, space sep', (
   assert.strictEqual(out.parts[0].text, '\x1b[48;5;111m\x1b[38;5;234m Opus \x1b[0m');
 });
 
+test('decorate segment without nerd but with unicode uses Unicode half-circle caps, empty sep', () => {
+  const style = { decoration:{ type:'segment', byGroup:true, assign:{ _env:'blue' } } };
+  const parts = [{ key:'model', text:'Opus', group:'env' }];
+  const out = decorate(parts, style, mkPal(), { color256:true, unicode:true });
+  assert.strictEqual(out.sep, '');
+  assert.strictEqual(out.parts[0].text,
+    '\x1b[38;5;111m◖\x1b[48;5;111m\x1b[38;5;234m Opus \x1b[49m\x1b[38;5;111m◗\x1b[0m');
+});
+
 test('decorate pill with no assign object does not throw', () => {
   const out = decorate([{ key:'x', text:'A', group:'env' }], { decoration:{type:'pill'} },
     { reset:'\x1b[0m', deco:{} }, {});
