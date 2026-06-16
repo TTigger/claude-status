@@ -8,4 +8,5 @@ coverage/
 .env
 .env.*
 .playwright-mcp/
+.superpowers/
 docs/
