@@ -25,7 +25,7 @@ npx @ttigger/claude-status install
 - **Usage limits in the CLI** — brings the claude.ai Session (5 h rolling) and Weekly (7 d) usage meters and their reset countdowns into every Claude Code session; no browser tab required.
 - **`ping` desktop notifications** — juggling several sessions? Get a desktop notification the moment a turn finishes (only for turns over 30 s) or a session is blocked waiting for you — naming the project so you know which one to return to. On by default, quiet, zero-dependency. [Details below.](#ping--session-completion-notifications)
 - **One command, nothing to clone** — `npx @ttigger/claude-status install` fetches and wires everything; works on any machine with Node ≥ 18.
-- **7 styles including Claude brand** — coral `claude` default, `minimal`, `classic`, `tech` (Nerd Font), `data` (braille), `ascii` (most compatible), `emoji`.
+- **4 curated styles** — refined Clay `claude` default, soft-pastel `mist`, powerline `neon`, and ultra-compatible `ascii`.
 - **Single-line adaptive layout** — `auto` layout packs everything onto one line and gracefully wraps to two or three lines only when the terminal is narrow.
 - **Theme-aware colors** — reads `~/.claude/settings.json` and mirrors Claude Code's light/dark/system theme; no manual palette config required.
 - **`cc` launcher** — a tiny `cc` shim that forwards all args to `claude`, saving keystrokes on every invocation.
@@ -127,9 +127,9 @@ With it off, the old `— waiting for first message` note returns in no-`rate_li
 
 ## Styles
 
-Seven styles are available. Choose with `claude-status style <name>` (shortcut) or `claude-status config set style <name>`.
+Four styles are available. Choose with `claude-status style <name>` (shortcut) or `claude-status config set style <name>`.
 
-### `claude` (default — Claude coral brand)
+### `claude` (default — refined Clay design)
 
 Default layout is `auto` (single adaptive line). Shown here as `three` (grouped lines)
 to make the parts clear; labels are `Ctx` / `S` / `W` and the bar is 8 cells wide:
@@ -140,36 +140,24 @@ Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60%
 S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
 ```
 
-### `minimal`
+### `mist`
+
+Soft pastel pills (Catppuccin / Rosé Pine inspired):
 
 ```
-Opus 4.8·1M | claude-status | main
-ctx ▪▪░░░░░░ 24% 47k | compact 60%
-ses ▪▪▪▪░░░░ 52% 3h12m | wk ▪▪░░░░░░ 31% 4d6h
+Opus 4.8·1M |  claude-status  |  ⎇ main 
+ Ctx ▰▰▱▱▱▱▱▱ 24% 47k  | compact 60%
+ S ▰▰▰▰▱▱▱▱ 52% 3h12m  |  W ▰▰▱▱▱▱▱▱ 31% 4d6h 
 ```
 
-### `classic` (fallback default)
+### `neon`
+
+Powerline segments (Tokyo Night inspired; needs a Nerd Font):
 
 ```
-Opus 4.8·1M | claude-status | ⎇ main
-Ctx ▓▓░░░░░░ 24% 47k | compact in 60%
-Sess ▓▓▓▓░░░░ 52% 3h12m | Wk ▓▓░░░░░░ 31% 4d6h
-```
-
-### `tech` (needs Nerd Font)
-
-```
- Opus 4.8·1M |  claude-status |   main
-󰅛 ██▱▱▱▱▱▱ 24% 47k | ♻ 60%
-󰲫 ████▱▱▱▱ 52% 3h12m |  ██▱▱▱▱▱▱ 31% 4d6h
-```
-
-### `data`
-
-```
-Opus 4.8·1M | claude-status | git: main
-CTX ⣿⣿⠀⠀⠀⠀⠀⠀ 24% 47.0k/1000k | AC 60%
-5H ⣿⣿⣿⣿⠀⠀⠀⠀ 52% 3h12m | 7D ⣿⣿⠀⠀⠀⠀⠀⠀ 31% 4d6h
+ Opus 4.8·1M  claude-status  ⎇ main 
+ Ctx ▰▰▱▱▱▱▱▱ 24% 47k  compact 60% 
+ S ▰▰▰▰▱▱▱▱ 52% 3h12m  W ▰▰▱▱▱▱▱▱ 31% 4d6h 
 ```
 
 ### `ascii` (most compatible)
@@ -178,14 +166,6 @@ CTX ⣿⣿⠀⠀⠀⠀⠀⠀ 24% 47.0k/1000k | AC 60%
 Opus 4.8·1M | claude-status | main
 Ctx [##------] 24% 47k | compact 60%
 Ses [####----] 52% 3h12m | Wk [##------] 31% 4d6h
-```
-
-### `emoji`
-
-```
-🤖 Opus 4.8·1M | 📁 claude-status | 🌿  main
-🧠 ▓▓░░░░░░ 24% 47k | ♻️ 60%
-⏱️ ▓▓▓▓░░░░ 52% 3h12m | 📅 ▓▓░░░░░░ 31% 4d6h
 ```
 
 ---
