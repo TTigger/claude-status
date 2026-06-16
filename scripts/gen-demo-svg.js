@@ -7,10 +7,10 @@
 //
 // It parses the ANSI the renderer actually emits — truecolor (38;2 / 48;2),
 // 256-colour (38;5 / 48;5), fg/bg resets — and draws background "deco" runs
-// (mist pills, neon segments) as rounded rects. neon is rendered WITH a Nerd
-// Font so its powerline half-circle end-caps (U+E0B6 / U+E0B4) are present in
-// the stream; those cap glyphs are drawn as SVG half-ellipses (in the segment
-// colour) so the PNG needs no Nerd Font to look right.
+// (mist pills, neon segments) as rounded rects. neon is rendered WITHOUT a Nerd
+// Font (the default), so its segment end-caps are the standard Unicode
+// half-circles ◖/◗ (U+25D6/7); those cap glyphs — and the Nerd-Font U+E0B6/U+E0B4
+// — are drawn as SVG half-ellipses so the PNG matches what users actually see.
 //
 // Layout: a FIXED character grid. Every run sits at col*CW and is stretched to
 // exactly its cell count via textLength + lengthAdjust, so glyphs line up with
@@ -42,7 +42,8 @@ const stdin = {
   },
 };
 
-// neon uses nerd:true so the powerline caps are emitted (drawn as SVG shapes).
+// All styles render at common-default caps (no Nerd Font) so the demo matches
+// the default experience; neon's ◖/◗ caps are drawn as SVG shapes.
 const DEMOS = [
   { style: 'claude', caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
   { style: 'mist',   caps: { unicode: true, color256: true, truecolor: true, nerd: false } },
