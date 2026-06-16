@@ -26,7 +26,7 @@ function renderHud(ctx) {
   const build = (opts) => {
     const raw = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts });
     if (noLimits && !costShown && (config.elements.session || config.elements.weekly)) {
-      raw.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits' });
+      raw.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits', plain: true });
     }
     return decorate(raw, style, palette, caps).parts;
   };

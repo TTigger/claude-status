@@ -71,3 +71,11 @@ test('resolveStylePalette dim falls back to SGR dim when role hex missing on col
   const pal = P.resolveStylePalette(styleNoDim, 'dark', { truecolor: true });
   assert.strictEqual(pal.dim, '\x1b[2m');
 });
+test('resolveStylePalette: explicit empty dim stays empty (no SGR dim)', () => {
+  const pal = P.resolveStylePalette({ palette: { dark: { dim: '' } } }, 'dark', { truecolor: true });
+  assert.strictEqual(pal.dim, '');
+});
+test('resolveStylePalette: missing dim falls back to SGR dim', () => {
+  const pal = P.resolveStylePalette({ palette: { dark: {} } }, 'dark', { truecolor: true });
+  assert.strictEqual(pal.dim, '\x1b[2m');
+});

@@ -118,6 +118,7 @@ function decorate(parts, style, palette, caps) {
   if (dec.type === 'pill') {
     const assign = dec.assign || {};
     const out = parts.map(p => {
+      if (p.plain) return { ...p, text: p.text + RESET };
       const roleKey = assign[p.key];
       const pair = hasDeco && roleKey ? palette.deco[roleKey] : null;
       const text = pair ? `${pair.bg}${pair.fg} ${p.text} ${RESET}` : p.text + RESET;
@@ -130,6 +131,7 @@ function decorate(parts, style, palette, caps) {
   const assign = dec.assign || {};
   const nerd = !!(caps && caps.nerd);
   const out = parts.map(p => {
+    if (p.plain) return { ...p, text: p.text + RESET };
     const roleKey = dec.byGroup ? segKeyFor(p, assign) : assign[p.key];
     const pair = hasDeco && roleKey ? palette.deco[roleKey] : null;
     if (!pair) return { ...p, text: p.text + RESET };

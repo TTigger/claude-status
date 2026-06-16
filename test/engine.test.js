@@ -172,3 +172,15 @@ test('decorate pill with no assign object does not throw', () => {
     { reset:'\x1b[0m', deco:{} }, {});
   assert.strictEqual(out.parts[0].text, 'A\x1b[0m');
 });
+test('decorate segment leaves plain-flagged parts undecorated (no bg, no glyph)', () => {
+  const style = { decoration:{ type:'segment', byGroup:true, assign:{ _env:'blue' } } };
+  const parts = [{ key:'note', text:'— waiting', group:'env', plain:true }];
+  const out = decorate(parts, style, mkPal(), { color256:true, nerd:true });
+  assert.strictEqual(out.parts[0].text, '— waiting\x1b[0m');
+});
+test('decorate pill leaves plain-flagged parts undecorated', () => {
+  const style = { decoration:{ type:'pill', assign:{ x:'sage' } } };
+  const parts = [{ key:'x', text:'P', group:'context', plain:true }];
+  const out = decorate(parts, style, mkPal(), { color256:true });
+  assert.strictEqual(out.parts[0].text, 'P\x1b[0m');
+});

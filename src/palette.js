@@ -42,7 +42,7 @@ function resolveStylePalette(style, theme, caps) {
   const out = {
     fgReset: FG_RESET,
     reset: RESET,
-    dim: fc(roles.dim) || '\x1b[2m',
+    dim: roles.dim === '' ? '' : (roles.dim ? fc(roles.dim) : '\x1b[2m'),
     text: fc(roles.text),
     accent: fc(roles.accent),
     accent2: fc(roles.accent2),
