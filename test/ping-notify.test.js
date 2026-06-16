@@ -24,13 +24,14 @@ test('linux uses notify-send with title and message args', () => {
   assert.deepStrictEqual(args, ['T', 'M']);
 });
 
-test('windows builds a PowerShell three-tier script (BurntToast -> NotifyIcon -> BEL)', () => {
-  const { cmd, args } = notifyCommand('win32', { title: 'T', message: 'M' });
+test('windows builds a PowerShell four-tier script (BurntToast -> WinRT toast -> NotifyIcon -> BEL)', () => {
+  const { cmd, args } = notifyCommand('win32', { title: 'claude-status', message: 'done in 42s' });
   assert.strictEqual(cmd, 'powershell');
-  const script = args.join(' ');
-  assert.ok(script.includes('BurntToast'));
-  assert.ok(script.includes('NotifyIcon'));
-  assert.ok(script.includes('char]7') || script.includes('char]7)'));
+  const script = args[args.length - 1];
+  assert.match(script, /ToastNotificationManager/);   // native WinRT tier present
+  assert.match(script, /BurntToast/);                  // still preferred first
+  assert.match(script, /ShowBalloonTip/);              // balloon kept as a later fallback
+  assert.match(script, /\[char\]7/);                   // bell is the final fallback
 });
 
 test('hasGui: mac/win always true; linux needs a display', () => {

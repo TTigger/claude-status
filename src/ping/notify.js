@@ -10,7 +10,7 @@ function hasGui(env, platform) {
 function psStr(s) { return "'" + String(s).replace(/'/g, "''") + "'"; }
 
 // Tiers at runtime *inside* PowerShell so notify.js stays pure:
-// BurntToast (if module present) -> System.Windows.Forms NotifyIcon balloon -> terminal bell.
+// BurntToast (if module present) -> native WinRT toast -> System.Windows.Forms NotifyIcon balloon -> terminal bell.
 function windowsScript(title, message) {
   return [
     `$t=${psStr(title)};$m=${psStr(message)};`,
@@ -19,13 +19,24 @@ function windowsScript(title, message) {
       `else{throw 'no-bt'}`,
     `}catch{`,
       `try{`,
-        `Add-Type -AssemblyName System.Windows.Forms;`,
-        `Add-Type -AssemblyName System.Drawing;`,
-        `$n=New-Object System.Windows.Forms.NotifyIcon;`,
-        `$n.Icon=[System.Drawing.SystemIcons]::Information;$n.Visible=$true;`,
-        `$n.ShowBalloonTip(5000,$t,$m,[System.Windows.Forms.ToolTipIcon]::Info);`,
-        `Start-Sleep -Seconds 6;$n.Dispose()`,
-      `}catch{[Console]::Out.Write([char]7)}`,
+        `[void][Windows.UI.Notifications.ToastNotificationManager,Windows.UI.Notifications,ContentType=WindowsRuntime];`,
+        `[void][Windows.Data.Xml.Dom.XmlDocument,Windows.Data.Xml.Dom,ContentType=WindowsRuntime];`,
+        `$te=($t -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;');`,
+        `$me=($m -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;');`,
+        `$x=New-Object Windows.Data.Xml.Dom.XmlDocument;`,
+        `$x.LoadXml('<toast><visual><binding template="ToastGeneric"><text>'+$te+'</text><text>'+$me+'</text></binding></visual></toast>');`,
+        `$tn=New-Object Windows.UI.Notifications.ToastNotification $x;`,
+        `[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('claude-status').Show($tn)`,
+      `}catch{`,
+        `try{`,
+          `Add-Type -AssemblyName System.Windows.Forms;`,
+          `Add-Type -AssemblyName System.Drawing;`,
+          `$n=New-Object System.Windows.Forms.NotifyIcon;`,
+          `$n.Icon=[System.Drawing.SystemIcons]::Information;$n.Visible=$true;`,
+          `$n.ShowBalloonTip(5000,$t,$m,[System.Windows.Forms.ToolTipIcon]::Info);`,
+          `Start-Sleep -Seconds 6;$n.Dispose()`,
+        `}catch{[Console]::Out.Write([char]7)}`,
+      `}`,
     `}`,
   ].join('');
 }
