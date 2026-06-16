@@ -60,4 +60,34 @@ function bgCode(hex, caps) {
   return '';
 }
 
-module.exports = { resolvePalette, colorize, fgCode, bgCode, hexToRgb, rgbTo256 };
+const FG_RESET = '\x1b[39m';
+const RESET = '\x1b[0m';
+// 無色終端的 tier 8 色 fallback
+const TIER8 = { low: '\x1b[32m', mid: '\x1b[33m', high: '\x1b[31m' };
+
+function resolveStylePalette(style, theme, caps) {
+  const t = theme === 'light' ? 'light' : 'dark';
+  const roles = (style.palette && style.palette[t]) || {};
+  const hasColor = !!(caps && (caps.truecolor || caps.color256));
+  const fc = (hex) => (hex ? fgCode(hex, caps) : '');
+  const out = {
+    fgReset: FG_RESET,
+    reset: RESET,
+    dim: hasColor ? fc(roles.dim) : '\x1b[2m',
+    text: fc(roles.text),
+    accent: fc(roles.accent),
+    accent2: fc(roles.accent2),
+    low: hasColor ? fc(roles.low) : TIER8.low,
+    mid: hasColor ? fc(roles.mid) : TIER8.mid,
+    high: hasColor ? fc(roles.high) : TIER8.high,
+    deco: {},
+  };
+  if (hasColor && roles.deco) {
+    for (const [k, pair] of Object.entries(roles.deco)) {
+      out.deco[k] = { bg: bgCode(pair.bg, caps), fg: fgCode(pair.fg, caps) };
+    }
+  }
+  return out;
+}
+
+module.exports = { resolvePalette, colorize, fgCode, bgCode, hexToRgb, rgbTo256, resolveStylePalette };
