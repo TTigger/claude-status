@@ -220,7 +220,7 @@ claude-status config set colorThresholds.green 40    # green up to 40 %
 claude-status config set colorThresholds.yellow 70   # yellow 40–70 %, red above
 claude-status config set autoCompact.thresholdPct 80 # approximate compaction threshold
 claude-status config set barWidth 10                 # wider bars
-claude-status config set style minimal               # switch style
+claude-status config set style claude                # switch style
 claude-status config set layout two                  # two-line layout
 ```
 
@@ -260,8 +260,8 @@ Only include keys you want to override — unset keys fall back to defaults.
 See the HUD rendered in your actual terminal colors before committing to a style:
 
 ```sh
-claude-status preview --style tech
-claude-status preview --style emoji --layout three
+claude-status preview --style neon
+claude-status preview --style mist --layout three
 ```
 
 `preview` is a live WYSIWYG render — it applies the real theme colors from `~/.claude/settings.json` and prints every layout variant side by side.

@@ -102,7 +102,7 @@ Adjust thresholds:
   claude-status config set colorThresholds.yellow 75
 
 If colours look flat or wrong, your terminal may lack truecolor/256-colour
-support. Try: claude-status config set style classic`;
+support. Try: claude-status config set style ascii`;
 }
 
 function _costHelp() {
@@ -191,7 +191,7 @@ Session / Weekly show "waiting for first message":
   in a session. Send a message and the counters will populate.
 
 Glyphs look wrong (boxes, question marks, or missing icons):
-  - The \`tech\` style uses Nerd Font glyphs. Install a Nerd Font and
+  - The \`neon\` style uses Nerd Font glyphs (powerline segments). Install a Nerd Font and
     configure your terminal to use it, or switch to a different style.
   - For maximum compatibility with any terminal, use the \`ascii\` style:
       claude-status config set style ascii
@@ -199,7 +199,6 @@ Glyphs look wrong (boxes, question marks, or missing icons):
 Colors look flat / all the same colour:
   Your terminal may not support truecolor or 256 colours. Switch to a style
   with the traffic colour mode which degrades more gracefully:
-      claude-status config set style classic
       claude-status config set style ascii
 
 Config file location:
