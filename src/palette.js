@@ -39,7 +39,7 @@ function hexToRgb(hex) {
 }
 // 標準 xterm-256：6x6x6 cube (16-231) + grayscale ramp (232-255)
 function rgbTo256(r, g, b) {
-  const toCube = (v) => v < 48 ? 0 : v < 115 ? 1 : Math.round((v - 35) / 40);
+  const toCube = (v) => v < 48 ? 0 : v < 115 ? 1 : Math.floor((v - 35) / 40);
   if (r === g && g === b) {
     if (r < 8) return 16;
     if (r > 248) return 231;

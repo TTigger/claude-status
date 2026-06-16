@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { resolvePalette, colorize } = require('../src/palette');
 const P = require('../src/palette');
+const { resolvePalette, colorize } = P;
 
 const caps256 = { color256: true, truecolor: false };
 const caps8 = { color256: false, truecolor: false };
@@ -47,4 +47,14 @@ test('bgCode emits truecolor background', () => {
 });
 test('bgCode emits empty string when no color caps', () => {
   assert.strictEqual(P.bgCode('#7aa2f7', {}), '');
+});
+
+test('rgbTo256 maps pure red to xterm index 196 (no cube overflow)', () => {
+  assert.strictEqual(P.rgbTo256(255, 0, 0), 196);
+});
+test('fgCode emits 256 code 196 for saturated red', () => {
+  assert.strictEqual(P.fgCode('#ff0000', { color256: true }), '\x1b[38;5;196m');
+});
+test('bgCode emits 256 code 196 for saturated red', () => {
+  assert.strictEqual(P.bgCode('#ff0000', { color256: true }), '\x1b[48;5;196m');
 });
