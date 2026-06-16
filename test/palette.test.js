@@ -88,3 +88,9 @@ test('resolveStylePalette with no color caps drops deco backgrounds', () => {
   assert.deepStrictEqual(pal.deco, {});
   assert.ok(pal.high.startsWith('\x1b['));
 });
+
+test('resolveStylePalette dim falls back to SGR dim when role hex missing on color terminal', () => {
+  const styleNoDim = { palette: { dark: { text:'#ffffff' } } }; // no dim hex
+  const pal = P.resolveStylePalette(styleNoDim, 'dark', { truecolor: true });
+  assert.strictEqual(pal.dim, '\x1b[2m');
+});
