@@ -1,7 +1,7 @@
 const { buildElements } = require('./elements');
-const { buildParts } = require('./engine');
+const { buildParts, decorate } = require('./engine');
 const { layoutLines } = require('./layout');
-const { resolvePalette } = require('./palette');
+const { resolveStylePalette } = require('./palette');
 const { styleByName, STYLES } = require('./registry');
 
 function resolveTheme(configPalette, theme) {
@@ -16,7 +16,7 @@ function renderHud(ctx) {
   els.branch = branch || null;
 
   const effTheme = resolveTheme(config.palette, theme);
-  const palette = resolvePalette(style.colorMode, effTheme, caps);
+  const palette = resolveStylePalette(style, effTheme, caps);
   const barWidth = config.barWidth === 'auto'
     ? Math.max(4, Math.min(12, Math.floor((columns || 100) / 12)))
     : config.barWidth;
@@ -24,14 +24,16 @@ function renderHud(ctx) {
   const noLimits = !els.session && !els.weekly;
   const costShown = !!(config.elements.cost && els.cost && els.cost.isApiKey);
   const build = (opts) => {
-    const parts = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts });
+    const raw = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts });
     if (noLimits && !costShown && (config.elements.session || config.elements.weekly)) {
-      parts.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits' });
+      raw.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits' });
     }
-    return parts;
+    return decorate(raw, style, palette, caps).parts;
   };
+  const decSep = decorate([], style, palette, caps).sep;
+  const sep = decSep !== undefined ? decSep : config.separator;
 
-  return layoutLines(build, config.layout, columns || 100, config.separator);
+  return layoutLines(build, config.layout, columns || 100, sep);
 }
 
 module.exports = { renderHud };

@@ -2,7 +2,6 @@ const STYLES = [
   { name: 'claude', label: 'Clay 質感簡潔', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'truecolor',
-    colorMode: 'coral', // TEMP: remove when render switches to resolveStylePalette (later task)
     decoration: { type: 'none' },
     palette: {
       dark:  { text:'#cfc6ba', dim:'#5d6370', accent:'#d97757', accent2:'#e8a07e',
@@ -13,7 +12,6 @@ const STYLES = [
   { name: 'mist', label: 'Mist 柔和粉彩', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'color256',
-    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
     decoration: { type: 'pill', assign: { project:'foam', branch:'lavender', context:'sage',
                   session:'gold', weekly:'rose', cost:'rose' } },
     palette: {
@@ -31,7 +29,6 @@ const STYLES = [
   { name: 'neon', label: 'Neon Deck 儀表板', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'nerd',
-    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
     decoration: { type: 'segment', assign: { _env:'blue', _context:'purple', _limits:'green' },
                   byGroup: true },
     palette: {
@@ -49,8 +46,11 @@ const STYLES = [
   { name: 'ascii', label: 'ASCII 相容', bar: { full: '#', empty: '-' }, barWrap: ['[', ']'],
     labels: { branch: '', ctx: 'Ctx', sess: 'Ses', wk: 'Wk', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'ascii',
-    colorMode: 'traffic', // TEMP: remove when render switches to resolveStylePalette (later task)
-    decoration: { type: 'none' }, palette: null },
+    decoration: { type: 'none' },
+    palette: {
+      dark:  { text:'', dim:'', accent:'', accent2:'', low:'#00d700', mid:'#ffd700', high:'#ff0000' },
+      light: { text:'', dim:'', accent:'', accent2:'', low:'#008700', mid:'#d75f00', high:'#d70000' },
+    } },
 ];
 
 const STYLE_ALIASES = {

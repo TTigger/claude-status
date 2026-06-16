@@ -1,12 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const { renderMetric, decorate } = require('../src/engine');
-const { resolvePalette } = require('../src/palette');
+const { resolveStylePalette } = require('../src/palette');
 const { stripAnsi } = require('../src/format');
 const { styleByName } = require('../src/registry');
 
 const style = styleByName('ascii');
-const palette = resolvePalette('traffic', 'dark', { color256: false });
+const palette = resolveStylePalette(style, 'dark', { color256: false });
 const thresholds = { green: 50, yellow: 80 };
 
 test('renderMetric draws label, wrapped bar, percent, suffix', () => {
@@ -165,4 +165,10 @@ test('decorate segment without nerd falls back to rounded bg pill, space sep', (
   const out = decorate([{ key:'model', text:'Opus', group:'env' }], style, mkPal(), { color256:true });
   assert.strictEqual(out.sep, ' ');
   assert.strictEqual(out.parts[0].text, '\x1b[48;5;111m\x1b[38;5;234m Opus \x1b[0m');
+});
+
+test('decorate pill with no assign object does not throw', () => {
+  const out = decorate([{ key:'x', text:'A', group:'env' }], { decoration:{type:'pill'} },
+    { reset:'\x1b[0m', deco:{} }, {});
+  assert.strictEqual(out.parts[0].text, 'A\x1b[0m');
 });
