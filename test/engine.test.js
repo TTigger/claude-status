@@ -211,3 +211,50 @@ test('neon with unicode but no colour renders with the default separator (not gl
     theme:'dark', caps:{ unicode:true }, columns:200, now:SAMPLE_NOW, branch:'main' });
   assert.ok(out.includes(' | '), 'expected default " | " separators, got: ' + JSON.stringify(out));
 });
+
+const { stripAnsi: strip } = require('../src/format');
+const TCU = { truecolor: true, color256: true, unicode: true };
+
+test('claude renderMetric sub-cell: 47/50/52 produce distinct bars', () => {
+  const cl = styleByName('claude');
+  const pal = resolveStylePalette(cl, 'dark', TCU);
+  const mk = (pct) => strip(renderMetric({
+    label: 'Ctx', pct, suffix: '', style: cl, palette: pal,
+    thresholds, barWidth: 8, caps: TCU, group: 'context', metricKey: 'context',
+  }));
+  const a = mk(47), b = mk(50), c = mk(52);
+  assert.notStrictEqual(a, b);
+  assert.notStrictEqual(b, c);
+  assert.match(a, /███▊████/);
+  assert.match(b, /████████/);
+  assert.match(c, /████▏███/);
+});
+
+test('claude renderMetric colours empty cells with the darkened-tier track', () => {
+  const cl = styleByName('claude');
+  const pal = resolveStylePalette(cl, 'dark', TCU);
+  const out = renderMetric({
+    label: 'Ctx', pct: 24, suffix: '', style: cl, palette: pal,
+    thresholds, barWidth: 8, caps: TCU, group: 'context', metricKey: 'context',
+  });
+  assert.ok(out.includes(pal.low));            // tier fill present
+  assert.ok(out.includes(pal.barEmptyTier.low)); // darkened empty track present
+});
+
+test('neon renderMetric colours empty with the segment-bg track (per group)', () => {
+  const ne = styleByName('neon');
+  const pal = resolveStylePalette(ne, 'dark', TCU);
+  const out = renderMetric({
+    label: 'S', pct: 52, suffix: '', style: ne, palette: pal,
+    thresholds, barWidth: 8, caps: TCU, group: 'limits', metricKey: 'session',
+  });
+  assert.ok(out.includes(pal.barTrack.green)); // _limits -> green track
+});
+
+test('ascii renderMetric is unchanged (single tier span, no track)', () => {
+  const out = renderMetric({
+    label: 'Ctx', pct: 23, suffix: '47k', style, palette, thresholds, barWidth: 8,
+    caps: { color256: false }, group: 'context', metricKey: 'context',
+  });
+  assert.strictEqual(strip(out), 'Ctx [##------] 23% 47k');
+});

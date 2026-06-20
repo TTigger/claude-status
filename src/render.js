@@ -24,7 +24,7 @@ function renderHud(ctx) {
   const noLimits = !els.session && !els.weekly;
   const costShown = !!(config.elements.cost && els.cost && els.cost.isApiKey);
   const build = (opts) => {
-    const raw = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts });
+    const raw = buildParts({ els, style, palette, config: { ...config, barWidth }, now, opts, caps });
     if (noLimits && !costShown && (config.elements.session || config.elements.weekly)) {
       raw.push({ key: 'limits-note', text: '— waiting for first message', group: 'limits', plain: true });
     }

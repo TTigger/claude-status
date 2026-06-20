@@ -6,13 +6,31 @@ function formatUsd(usd) {
   return '$' + (n < 1 ? n.toFixed(4) : n.toFixed(2));
 }
 
-function renderMetric({ label, pct, suffix, style, palette, thresholds, barWidth }) {
+function renderMetric({ label, pct, suffix, style, palette, thresholds, barWidth, caps, group, metricKey }) {
   const tierName = tier(pct, thresholds);
-  const glyphs = style.bar;
   const [open, close] = style.barWrap;
-  const filledStr = bar(pct, barWidth, { full: glyphs.full, empty: glyphs.empty });
-  // color the whole bar interior + percent by tier; brackets/label uncolored
-  const coloredBar = open + colorize(filledStr, tierName, palette) + close;
+  const hasColor = !!(caps && (caps.truecolor || caps.color256));
+  const subcell = !!(caps && caps.unicode) && !!style.hiresBar;
+  const glyphs = subcell
+    ? { full: '█', empty: hasColor ? '█' : '░' }
+    : style.bar;
+
+  // Resolve the empty-track colour (only for colour + hi-res styles).
+  let emptyColor;
+  if (hasColor && subcell && style.barTrack) {
+    if (style.barTrack.from === 'tier' && palette.barEmptyTier) {
+      emptyColor = palette.barEmptyTier[tierName];
+    } else if (style.barTrack.from === 'deco' && palette.barTrack) {
+      const dec = style.decoration || {};
+      const role = dec.byGroup ? (dec.assign || {})['_' + group] : (dec.assign || {})[metricKey];
+      emptyColor = role ? palette.barTrack[role] : undefined;
+    }
+  }
+
+  const { fill, empty } = bar(pct, barWidth, glyphs, subcell);
+  const coloredBar = emptyColor
+    ? open + colorize(fill, tierName, palette) + emptyColor + empty + palette.fgReset + close
+    : open + colorize(fill + empty, tierName, palette) + close;
   const coloredPct = colorize(`${pct}%`, tierName, palette);
   const parts = [label, coloredBar, coloredPct];
   if (suffix) parts.push(suffix);
@@ -26,7 +44,7 @@ function fmtReset(resetsAt, now, precision) {
   return d;
 }
 
-function buildParts({ els, style, palette, config, now, opts }) {
+function buildParts({ els, style, palette, config, now, opts, caps }) {
   const parts = [];
   const L = style.labels;
   const icons = style.icons || {};
@@ -61,7 +79,7 @@ function buildParts({ els, style, palette, config, now, opts }) {
         : tokensK(c.tokensK * 1000, style.decimals);
     }
     const text = opts.bars
-      ? renderMetric({ label: lc(L.ctx), pct: c.pct, suffix, style, palette, thresholds, barWidth })
+      ? renderMetric({ label: lc(L.ctx), pct: c.pct, suffix, style, palette, thresholds, barWidth, caps, group: 'context', metricKey: 'context' })
       : `${lc(L.ctx)} ${colorizePct(c.pct, thresholds, palette)}${suffix ? ' ' + suffix : ''}`;
     push('context', text, 'context');
   }
@@ -79,7 +97,7 @@ function buildParts({ els, style, palette, config, now, opts }) {
       return;
     }
     const text = opts.bars
-      ? renderMetric({ label: lc(lbl), pct: el.pct, suffix: reset, style, palette, thresholds, barWidth })
+      ? renderMetric({ label: lc(lbl), pct: el.pct, suffix: reset, style, palette, thresholds, barWidth, caps, group: 'limits', metricKey: key })
       : `${lc(lbl)} ${colorizePct(el.pct, thresholds, palette)}${reset ? ' ' + reset : ''}`;
     push(key, text, 'limits');
   };

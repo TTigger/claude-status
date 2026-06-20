@@ -51,7 +51,7 @@ The default style is `claude` with the `auto` layout — a single adaptive line 
 packs onto one row on a wide terminal and only wraps to 2–3 rows when space runs out:
 
 ```
-Opus 4.8·1M | claude-status | ⎇ main | Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60% | S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
+Opus 4.8·1M | claude-status | ⎇ main | Ctx █▉██████ 24% 47k | compact 60% | S ████▏███ 52% 3h12m | W ██▌█████ 31% 4d6h
 ```
 
 On a narrow terminal the same data wraps (and sheds detail) automatically — see the
@@ -138,8 +138,8 @@ to make the parts clear; labels are `Ctx` / `S` / `W` and the bar is 8 cells wid
 
 ```
 Opus 4.8·1M | claude-status | ⎇ main
-Ctx ▰▰▱▱▱▱▱▱ 24% 47k | compact 60%
-S ▰▰▰▰▱▱▱▱ 52% 3h12m | W ▰▰▱▱▱▱▱▱ 31% 4d6h
+Ctx █▉██████ 24% 47k | compact 60%
+S ████▏███ 52% 3h12m | W ██▌█████ 31% 4d6h
 ```
 
 ### `mist`
@@ -150,8 +150,8 @@ Soft pastel pills (Catppuccin / Rosé Pine inspired):
 
 ```
 Opus 4.8·1M |  claude-status  |  ⎇ main 
- Ctx ▰▰▱▱▱▱▱▱ 24% 47k  | compact 60%
- S ▰▰▰▰▱▱▱▱ 52% 3h12m  |  W ▰▰▱▱▱▱▱▱ 31% 4d6h 
+ Ctx █▉██████ 24% 47k  | compact 60%
+ S ████▏███ 52% 3h12m  |  W ██▌█████ 31% 4d6h 
 ```
 
 ### `neon`
@@ -162,8 +162,8 @@ Powerline segments (Tokyo Night inspired). Rounded `◖◗` caps work in any Uni
 
 ```
 ◖ Opus 4.8·1M ◗◖ claude-status ◗◖ ⎇ main ◗
-◖ Ctx ▰▰▱▱▱▱▱▱ 24% 47k ◗◖ compact 60% ◗
-◖ S ▰▰▰▰▱▱▱▱ 52% 3h12m ◗◖ W ▰▰▱▱▱▱▱▱ 31% 4d6h ◗
+◖ Ctx █▉██████ 24% 47k ◗◖ compact 60% ◗
+◖ S ████▏███ 52% 3h12m ◗◖ W ██▌█████ 31% 4d6h ◗
 ```
 
 ### `ascii` (most compatible)
