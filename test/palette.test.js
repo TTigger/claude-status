@@ -79,3 +79,36 @@ test('resolveStylePalette: missing dim falls back to SGR dim', () => {
   const pal = P.resolveStylePalette({ palette: { dark: {} } }, 'dark', { truecolor: true });
   assert.strictEqual(pal.dim, '\x1b[2m');
 });
+
+const { resolveStylePalette: rsp } = require('../src/palette');
+const { styleByName: sbn } = require('../src/registry');
+const TC = { truecolor: true, color256: true, unicode: true };
+
+test('claude resolves a darkened-tier empty track (from:tier)', () => {
+  const p = rsp(sbn('claude'), 'dark', TC);
+  // low #d97757 -> darken 0.30 -> #41241a -> truecolor fg
+  assert.strictEqual(p.barEmptyTier.low, '\x1b[38;2;65;36;26m');
+  assert.ok(p.barEmptyTier.mid && p.barEmptyTier.high);
+  assert.deepStrictEqual(p.barTrack, undefined); // claude has no deco track
+});
+
+test('neon resolves darkened-deco-bg tracks (from:deco)', () => {
+  const p = rsp(sbn('neon'), 'dark', TC);
+  // purple bg #bb9af7 -> darken 0.50 -> #5e4d7c
+  assert.strictEqual(p.barTrack.purple, '\x1b[38;2;94;77;124m');
+  // green bg #9ece6a -> darken 0.50 -> #4f6735
+  assert.strictEqual(p.barTrack.green, '\x1b[38;2;79;103;53m');
+  assert.strictEqual(p.barEmptyTier, undefined);
+});
+
+test('mist resolves darkened-pill tracks (from:deco, factor 0.65)', () => {
+  const p = rsp(sbn('mist'), 'dark', TC);
+  // sage bg #23332b -> darken 0.65 -> #17211c
+  assert.strictEqual(p.barTrack.sage, '\x1b[38;2;23;33;28m');
+});
+
+test('no-colour terminal omits both track structures', () => {
+  const p = rsp(sbn('claude'), 'dark', { color256: false });
+  assert.strictEqual(p.barEmptyTier, undefined);
+  assert.strictEqual(p.barTrack, undefined);
+});

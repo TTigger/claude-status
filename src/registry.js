@@ -1,5 +1,6 @@
 const STYLES = [
   { name: 'claude', label: 'Clay 質感簡潔', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+    hiresBar: true, barTrack: { from: 'tier', factor: 0.30 },
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'truecolor',
     decoration: { type: 'none' },
@@ -10,6 +11,7 @@ const STYLES = [
                low:'#bf5a3c', mid:'#c8714e', high:'#a83a22' },
     } },
   { name: 'mist', label: 'Mist 柔和粉彩', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+    hiresBar: true, barTrack: { from: 'deco', factor: 0.65 },
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'color256',
     decoration: { type: 'pill', assign: { project:'foam', branch:'lavender', context:'sage',
@@ -27,6 +29,7 @@ const STYLES = [
                        rose:{bg:'#f3dde3',fg:'#b05772'} } },
     } },
   { name: 'neon', label: 'Neon Deck 儀表板', bar: { full: '▰', empty: '▱' }, barWrap: ['', ''],
+    hiresBar: true, barTrack: { from: 'deco', factor: 0.50 },
     labels: { branch: '⎇', ctx: 'Ctx', sess: 'S', wk: 'W', ac: 'compact' },
     icons: null, decimals: false, rawTokens: false, lowercase: false, requires: 'nerd',
     decoration: { type: 'segment', assign: { _env:'blue', _context:'purple', _limits:'green' },

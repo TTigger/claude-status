@@ -1,3 +1,5 @@
+const { darken } = require('./format');
+
 function colorize(text, tierName, palette) {
   return palette[tierName] + text + palette.fgReset;
 }
@@ -54,6 +56,21 @@ function resolveStylePalette(style, theme, caps) {
   if (hasColor && roles.deco) {
     for (const [k, pair] of Object.entries(roles.deco)) {
       out.deco[k] = { bg: bgCode(pair.bg, caps), fg: fgCode(pair.fg, caps) };
+    }
+  }
+  const bt = style.barTrack;
+  if (hasColor && bt) {
+    if (bt.from === 'tier') {
+      out.barEmptyTier = {
+        low: fgCode(darken(roles.low, bt.factor), caps),
+        mid: fgCode(darken(roles.mid, bt.factor), caps),
+        high: fgCode(darken(roles.high, bt.factor), caps),
+      };
+    } else if (bt.from === 'deco' && roles.deco) {
+      out.barTrack = {};
+      for (const [k, pair] of Object.entries(roles.deco)) {
+        out.barTrack[k] = fgCode(darken(pair.bg, bt.factor), caps);
+      }
     }
   }
   return out;
