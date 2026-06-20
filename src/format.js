@@ -10,10 +10,21 @@ function tier(pct, thresholds) {
   return 'high';
 }
 
-function bar(pct, width, glyphs) {
+const EIGHTHS = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉'];
+
+function bar(pct, width, glyphs, subcell) {
   const p = clampPct(pct);
-  const filled = Math.round((p / 100) * width);
-  return glyphs.full.repeat(filled) + glyphs.empty.repeat(width - filled);
+  if (!subcell) {
+    const filled = Math.round((p / 100) * width);
+    return { fill: glyphs.full.repeat(filled), empty: glyphs.empty.repeat(width - filled) };
+  }
+  const e = Math.round((p / 100) * width * 8);
+  const f = Math.floor(e / 8);
+  const r = e % 8;
+  let fill = glyphs.full.repeat(f);
+  if (r > 0) fill += EIGHTHS[r];
+  const used = f + (r > 0 ? 1 : 0);
+  return { fill, empty: glyphs.empty.repeat(Math.max(0, width - used)) };
 }
 
 function humanizeDuration(seconds) {
@@ -35,4 +46,13 @@ function tokensK(tokens, decimals = false) {
 
 function stripAnsi(s) { return s.replace(/\x1b\[[0-9;]*m/g, ''); }
 
-module.exports = { clampPct, tier, bar, humanizeDuration, tokensK, stripAnsi };
+function darken(hex, factor) {
+  const h = hex.replace('#', '');
+  const ch = (i) => {
+    const v = Math.max(0, Math.min(255, Math.round(parseInt(h.slice(i, i + 2), 16) * factor)));
+    return v.toString(16).padStart(2, '0');
+  };
+  return '#' + ch(0) + ch(2) + ch(4);
+}
+
+module.exports = { clampPct, tier, bar, darken, humanizeDuration, tokensK, stripAnsi };

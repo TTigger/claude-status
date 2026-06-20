@@ -18,11 +18,32 @@ test('tier respects thresholds (boundaries inclusive low side)', () => {
 
 const { bar } = require('../src/format');
 
-test('bar fills proportionally with given glyphs', () => {
-  assert.strictEqual(bar(23, 8, { full: '#', empty: '-' }), '##------');
-  assert.strictEqual(bar(0, 4, { full: '#', empty: '-' }), '----');
-  assert.strictEqual(bar(100, 4, { full: '#', empty: '-' }), '####');
-  assert.strictEqual(bar(50, 8, { full: '#', empty: '-' }), '####----');
+test('bar (integer path) splits into fill/empty proportionally', () => {
+  assert.deepStrictEqual(bar(23, 8, { full: '#', empty: '-' }, false), { fill: '##', empty: '------' });
+  assert.deepStrictEqual(bar(0, 4, { full: '#', empty: '-' }, false), { fill: '', empty: '----' });
+  assert.deepStrictEqual(bar(100, 4, { full: '#', empty: '-' }, false), { fill: '####', empty: '' });
+  assert.deepStrictEqual(bar(50, 8, { full: '#', empty: '-' }, false), { fill: '####', empty: '----' });
+});
+
+test('bar (sub-cell path) resolves to 64 levels so 47/50/52 differ', () => {
+  const g = { full: '█', empty: '█' };
+  assert.strictEqual(bar(47, 8, g, true).fill, '███▊');
+  assert.strictEqual(bar(50, 8, g, true).fill, '████');
+  assert.strictEqual(bar(52, 8, g, true).fill, '████▏');
+  // empty fills the remaining cells (boundary cell counts as used)
+  assert.strictEqual(bar(47, 8, g, true).empty, '████');
+  assert.strictEqual(bar(50, 8, g, true).empty, '████');
+  assert.strictEqual(bar(52, 8, g, true).empty, '███');
+  // exact 0% / 100%
+  assert.deepStrictEqual(bar(0, 8, g, true), { fill: '', empty: '████████' });
+  assert.deepStrictEqual(bar(100, 8, g, true), { fill: '████████', empty: '' });
+});
+
+const { darken } = require('../src/format');
+test('darken multiplies channels and clamps', () => {
+  assert.strictEqual(darken('#d97757', 0.30), '#41241a'); // 217,119,87 -> 65,36,26
+  assert.strictEqual(darken('#bb9af7', 0.50), '#5e4d7c'); // 187,154,247 -> 94,77,124
+  assert.strictEqual(darken('#ffffff', 0), '#000000');
 });
 
 const { humanizeDuration, tokensK } = require('../src/format');
