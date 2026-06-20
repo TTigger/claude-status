@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Progress bars are now high-resolution: the 8-cell Context/Session/Weekly gauges use Unicode eighth-block fills (`█` plus `▏▎▍▌▋▊▉` for the boundary cell), giving 64 levels instead of 8 — `47%`, `50%`, and `52%` now render as visibly different bars instead of the identical `▰▰▰▰▱▱▱▱`. The empty portion is a solid dark track (darkened tier hue for `claude`, darkened segment/pill background for `neon`/`mist`), so the bar reads as a continuous gauge at a glance. `ascii` is unchanged; terminals without colour fall back to a `░` empty track.
+
 ## [0.6.1] - 2026-06-16
 
 ### Fixed
