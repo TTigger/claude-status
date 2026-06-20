@@ -251,6 +251,16 @@ test('neon renderMetric colours empty with the segment-bg track (per group)', ()
   assert.ok(out.includes(pal.barTrack.green)); // _limits -> green track
 });
 
+test('mist renderMetric colours empty with the per-key pill track (non-byGroup)', () => {
+  const mi = styleByName('mist');
+  const pal = resolveStylePalette(mi, 'dark', TCU);
+  const out = renderMetric({
+    label: 'S', pct: 52, suffix: '', style: mi, palette: pal,
+    thresholds, barWidth: 8, caps: TCU, group: 'limits', metricKey: 'session',
+  });
+  assert.ok(out.includes(pal.barTrack.gold)); // session -> gold track (per-key assign)
+});
+
 test('ascii renderMetric is unchanged (single tier span, no track)', () => {
   const out = renderMetric({
     label: 'Ctx', pct: 23, suffix: '47k', style, palette, thresholds, barWidth: 8,
