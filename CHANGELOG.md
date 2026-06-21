@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-06-21
+
+### Changed
+
+- README: surface the high-resolution usage gauges in the **Why** list, so the headline feature added in 0.7.0 is visible on the GitHub and npm landing pages (the rendered mockups and demo images already showed the new bars; this adds the prose selling point and syncs the npm README).
+
 ## [0.7.0] - 2026-06-20
 
 ### Changed
