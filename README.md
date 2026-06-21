@@ -23,6 +23,7 @@ npx @ttigger/claude-status install
 ## Why
 
 - **Usage limits in the CLI** — brings the claude.ai Session (5 h rolling) and Weekly (7 d) usage meters and their reset countdowns into every Claude Code session; no browser tab required.
+- **At-a-glance usage gauges** — Context, Session, and Weekly each render as a high-resolution bar (64 levels via Unicode sub-cell fills) over a solid track, so you read your remaining headroom straight from the fill instead of doing math on a percentage.
 - **`ping` desktop notifications** — juggling several sessions? Get a desktop notification the moment a turn finishes (only for turns over 30 s) or a session is blocked waiting for you — naming the project so you know which one to return to. On by default, quiet, zero-dependency. [Details below.](#ping--session-completion-notifications)
 - **One command, nothing to clone** — `npx @ttigger/claude-status install` fetches and wires everything; works on any machine with Node ≥ 18.
 - **4 curated styles** — refined Clay `claude` default, soft-pastel `mist`, powerline `neon`, and ultra-compatible `ascii`.
