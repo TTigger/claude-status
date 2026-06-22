@@ -26,6 +26,9 @@ function previewHint(caps, line, styleName) {
     const missing = [noColour && 'colour', noUnicode && 'unicode'].filter(Boolean).join('/');
     return `note: this terminal reports no ${missing}; for the full look use Windows Terminal or VS Code, or try the 'claude'/'ascii' style.`;
   }
+  // `line` is the whole rendered output (possibly multi-line); the gauges drop
+  // together at a width threshold, so "no block glyph anywhere" means the bars
+  // were shed to fit. ascii is already exempted above (its bars are #/-).
   if (!/[█▉▊▋▌▍▎▏]/.test(line)) {
     return 'note: widen the terminal to ~120 columns to see the usage bars.';
   }
