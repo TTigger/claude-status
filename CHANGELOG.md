@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-06-22
+
 ### Fixed
 
 - `neon` bars, percentages, and reset countdowns are now readable on the bright powerline segments. They were rendered in bright tier colours meant for a dark terminal — at low usage the green fill and the percentage were the *same colour* as the green `Session`/`Weekly` segment background, so they vanished. `neon` now uses dark tier ink (dark green/amber/red) that contrasts on the bright segments, a faint-groove empty track instead of a dark one (so the gauge no longer reads backwards), and a dark-ink foreground reset so the countdown suffix is no longer faint default-grey. Only `neon` changes; `claude`/`mist`/`ascii` are unaffected.
