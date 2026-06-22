@@ -5,9 +5,20 @@ const { configPath } = require('../src/installer/paths');
 const { runInstall, runUninstall } = require('../src/installer/install');
 const { loadConfig, getDotted, setConfig, resetConfig } = require('../src/config');
 const { CONFIG_SCHEMA, STYLES, LAYOUTS } = require('../src/registry');
-const { renderSample, galleryLine } = require('../src/preview');
+const { renderSample, galleryLine, previewHint } = require('../src/preview');
+const { capabilities } = require('../src/detect');
 const { HELP, topicHelp } = require('../src/help');
 const { detectShell, writeAlias } = require('../src/installer/alias');
+
+function previewCaps() { return capabilities(process.env, process.platform); }
+function previewCols() { return process.stdout.columns || parseInt(process.env.COLUMNS, 10) || 100; }
+function printPreview(style, layout) {
+  const caps = previewCaps();
+  const out = renderSample({ style, layout, columns: previewCols(), caps });
+  console.log(out);
+  const hint = previewHint(caps, out, style);
+  if (hint) console.log(hint);
+}
 
 function parseFlags(args) {
   const flags = {}; const positional = [];
@@ -24,7 +35,7 @@ function applyConfigValue(key, value) {
   if (!r.ok) { console.error(r.error); process.exit(1); }
   console.log(`✓ ${key} → ${r.value}. 目前效果：`);
   const cfg = loadConfig(cp);
-  console.log(renderSample({ style: cfg.style, layout: cfg.layout, columns: parseInt(process.env.COLUMNS, 10) || 100 }));
+  printPreview(cfg.style, cfg.layout);
 }
 
 function cmdInstall(flags) {
@@ -57,7 +68,7 @@ function cmdInstall(flags) {
   if (summary.ccCollision) console.log('⚠ "cc" already exists on PATH (C compiler?). Consider: claude-status install --alias clc');
   if (summary.csCollision) console.log('⚠ "cs" already exists on PATH (coursier?). Our cs may shadow it; use a custom alias instead: claude-status alias <name> --for self');
   console.log(summary.dryRun ? 'Preview:' : 'Open a new Claude Code session to see the HUD. Preview now:');
-  console.log(renderSample({ style: summary.chosenStyle, columns: parseInt(process.env.COLUMNS,10) || 100 }));
+  printPreview(summary.chosenStyle);
   if (typeof flags.alias === 'string') {
     doAlias(flags.alias);
   }
@@ -72,7 +83,7 @@ function cmdConfig(positional, flags) {
     if (!r.ok) { console.error(r.error); process.exit(1); }
     console.log(`✓ ${key} → ${r.value}. 目前效果：`);
     const cfg = loadConfig(cp);
-    console.log(renderSample({ style: cfg.style, layout: cfg.layout, columns: parseInt(process.env.COLUMNS,10) || 100 }));
+    printPreview(cfg.style, cfg.layout);
     return;
   }
   if (sub === 'get') { console.log(getDotted(loadConfig(cp), positional[1])); return; }
@@ -85,18 +96,17 @@ function cmdConfig(positional, flags) {
       console.log(`${key} = ${cur}${choices}`);
     }
     console.log('\nStyles preview:');
-    for (const s of STYLES) console.log(`  ${s.name === cfg.style ? '●' : '○'} ${s.name.padEnd(8)} ${galleryLine(s.name, 80)}`);
+    for (const s of STYLES) console.log(`  ${s.name === cfg.style ? '●' : '○'} ${s.name.padEnd(8)} ${galleryLine(s.name, 80, previewCaps())}`);
     return;
   }
   console.error('Unknown config subcommand. See: claude-status help'); process.exit(1);
 }
 
 function cmdPreview(flags) {
-  console.log(renderSample({
-    style: typeof flags.style === 'string' ? flags.style : undefined,
-    layout: typeof flags.layout === 'string' ? flags.layout : undefined,
-    columns: parseInt(process.env.COLUMNS, 10) || 100,
-  }));
+  printPreview(
+    typeof flags.style === 'string' ? flags.style : undefined,
+    typeof flags.layout === 'string' ? flags.layout : undefined,
+  );
 }
 
 function cmdStyle(positional) {
@@ -106,7 +116,7 @@ function cmdStyle(positional) {
     const currentStyle = cfg.style;
     console.log('Styles (● = current):');
     for (const s of STYLES) {
-      console.log(`  ${s.name === currentStyle ? '●' : '○'} ${s.name.padEnd(8)} ${galleryLine(s.name, 80)}`);
+      console.log(`  ${s.name === currentStyle ? '●' : '○'} ${s.name.padEnd(8)} ${galleryLine(s.name, 80, previewCaps())}`);
     }
     return;
   }
