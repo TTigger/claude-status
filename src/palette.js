@@ -42,7 +42,7 @@ function resolveStylePalette(style, theme, caps) {
   const hasColor = !!(caps && (caps.truecolor || caps.color256));
   const fc = (hex) => (hex ? fgCode(hex, caps) : '');
   const out = {
-    fgReset: FG_RESET,
+    fgReset: (hasColor && style.segInk) ? fgCode(style.segInk, caps) : FG_RESET,
     reset: RESET,
     dim: roles.dim === '' ? '' : (roles.dim ? fc(roles.dim) : '\x1b[2m'),
     text: fc(roles.text),

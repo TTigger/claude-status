@@ -92,13 +92,24 @@ test('claude resolves a darkened-tier empty track (from:tier)', () => {
   assert.deepStrictEqual(p.barTrack, undefined); // claude has no deco track
 });
 
-test('neon resolves darkened-deco-bg tracks (from:deco)', () => {
+test('neon resolves faint-groove deco tracks + dark-ink fgReset (from:deco, factor 0.90)', () => {
   const p = rsp(sbn('neon'), 'dark', TC);
-  // purple bg #bb9af7 -> darken 0.50 -> #5e4d7c
-  assert.strictEqual(p.barTrack.purple, '\x1b[38;2;94;77;124m');
-  // green bg #9ece6a -> darken 0.50 -> #4f6735
-  assert.strictEqual(p.barTrack.green, '\x1b[38;2;79;103;53m');
+  // purple bg #bb9af7 -> darken 0.90 -> #a88bde
+  assert.strictEqual(p.barTrack.purple, '\x1b[38;2;168;139;222m');
+  // green bg #9ece6a -> darken 0.90 -> #8eb95f
+  assert.strictEqual(p.barTrack.green, '\x1b[38;2;142;185;95m');
   assert.strictEqual(p.barEmptyTier, undefined);
+  // neon segInk #16161e -> fgReset returns to the dark segment ink, not terminal default
+  assert.strictEqual(p.fgReset, '\x1b[38;2;22;22;30m');
+  // dark tier ink (readable on bright segments)
+  assert.strictEqual(p.low, '\x1b[38;2;46;90;28m');
+  assert.strictEqual(p.mid, '\x1b[38;2;135;83;18m');
+  assert.strictEqual(p.high, '\x1b[38;2;158;37;51m');
+});
+
+test('neon fgReset falls back to default on a no-colour terminal', () => {
+  const p = rsp(sbn('neon'), 'dark', { color256: false });
+  assert.strictEqual(p.fgReset, '\x1b[39m');
 });
 
 test('mist resolves darkened-pill tracks (from:deco, factor 0.65)', () => {

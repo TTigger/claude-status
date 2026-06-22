@@ -261,6 +261,19 @@ test('mist renderMetric colours empty with the per-key pill track (non-byGroup)'
   assert.ok(out.includes(pal.barTrack.gold)); // session -> gold track (per-key assign)
 });
 
+test('neon renderMetric: dark tier ink, no bright-green fg, dark-ink suffix', () => {
+  const ne = styleByName('neon');
+  const pal = resolveStylePalette(ne, 'dark', TCU);
+  const out = renderMetric({
+    label: 'S', pct: 7, suffix: '1h44m', style: ne, palette: pal,
+    thresholds, barWidth: 8, caps: TCU, group: 'limits', metricKey: 'session',
+  });
+  assert.strictEqual(pal.low, '\x1b[38;2;46;90;28m');        // dark green low tier
+  assert.ok(out.includes(pal.low));                          // used for fill + percentage
+  assert.ok(!out.includes('\x1b[38;2;158;206;106m'));        // no bright-green FG (the old bug)
+  assert.ok(out.includes('\x1b[38;2;22;22;30m 1h44m'));      // suffix preceded by dark-ink reset
+});
+
 test('ascii renderMetric is unchanged (single tier span, no track)', () => {
   const out = renderMetric({
     label: 'Ctx', pct: 23, suffix: '47k', style, palette, thresholds, barWidth: 8,
