@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `cs style <name>` / `cs config set` / `cs preview` now show what *your* terminal will actually render: they use the detected colour/Unicode capabilities and the real terminal width, instead of a hardcoded fully-capable 100-column preview. Previously the preview claimed Nerd-Font powerline caps and truecolor even on a plain `cmd.exe`, and at 100 columns it silently dropped the usage bars — so `cs style neon` looked blank. When the terminal can't render the style (no colour/Unicode) or is too narrow for the bars, a one-line `note:` now explains how to get the full look (use Windows Terminal / VS Code, widen to ~120 columns, or pick the `claude`/`ascii` style). The style galleries render with detected capabilities too.
+
 ## [0.7.2] - 2026-06-22
 
 ### Fixed
